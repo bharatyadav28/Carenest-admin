@@ -6,6 +6,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 const axiosInstance = axios.create({
   //   baseURL: "https://carenest-backend-8y2y.onrender.com",
@@ -57,11 +58,9 @@ const refreshAccessToken = async (): Promise<string> => {
     return accessToken;
   } catch (error) {
     // Remove invalid tokens
-    alert("Token refresh failed");
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-
-    // Redirect to sign-in page
+    toast.error("Please login again");
     window.location.href = "/signin"; // Adjust path as needed
     throw error;
   }

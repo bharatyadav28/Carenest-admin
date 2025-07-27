@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { signin } from "./api";
 import { useMutation } from "@tanstack/react-query";
 import { getCookieConfig } from "@/lib/resuable-fns";
+import { toast } from "sonner";
 
 export const useSignin = () => {
   const navigate = useNavigate();
@@ -13,6 +14,8 @@ export const useSignin = () => {
     mutationFn: signin,
 
     onSuccess: (data) => {
+      console.log("Signin successful:", data);
+      toast.success(data?.message);
       const { accessToken, refreshToken } = data?.data;
 
       Cookies.set("accessToken", accessToken, getCookieConfig(accessToken));
@@ -22,7 +25,8 @@ export const useSignin = () => {
     },
 
     onError: (error: AxiosError<any>) => {
-      alert(error.response?.data?.message || "Signin failed");
+      console.log("Error during signin:", error);
+      toast.error(error?.response?.data?.message || "Signin failed");
     },
   });
 };

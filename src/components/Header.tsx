@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useGeneral from "@/store/features/general";
+import { toast } from "sonner";
 
 function Header() {
   const isMobile = useIsMobile();
@@ -20,6 +21,7 @@ function Header() {
   const handleLogout = () => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
+    toast.success("Logged out successfully");
     navigate("/signin");
   };
 

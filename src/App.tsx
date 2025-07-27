@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/sonner";
 
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
@@ -16,10 +17,6 @@ function App() {
       children: [
         {
           index: true,
-          Component: Home,
-        },
-        {
-          path: "test",
           Component: Home,
         },
       ],
@@ -39,6 +36,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <RouterProvider router={router}></RouterProvider>
+        <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
   );

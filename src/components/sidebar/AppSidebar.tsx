@@ -34,11 +34,6 @@ function AppSidebar() {
       Icon: DashboardIcon,
       path: "/",
     },
-    {
-      name: "Test",
-      Icon: DashboardIcon,
-      path: "/test",
-    },
   ];
 
   // Function to check if a sub-menu item is to open by default
