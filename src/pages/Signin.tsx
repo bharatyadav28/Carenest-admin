@@ -12,9 +12,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { CustomButton } from "@/components/common/CustomInputs";
 import { Input } from "@/components/ui/input";
+import { useSignin } from "@/store/data/users/hooks";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -26,6 +27,9 @@ const formSchema = z.object({
 function Signin() {
   const [showPassword, setShowPassword] = useState(false);
 
+  const signin = useSignin();
+  const isSubmitting = signin.isPending;
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,8 +39,10 @@ function Signin() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    if (isSubmitting) return;
+    signin.mutate(values);
   }
+
   return (
     <div className="flex h-max justify-center mt-[10rem] lg:mx-0 mx-3">
       <div className="w-full max-w-md p-8  space-y-6 bg-[#0f0f0f] rounded-lg shadow-lg">
@@ -101,7 +107,7 @@ function Signin() {
             />
 
             <CustomButton type="submit" className="w-full py-5">
-              Signin
+              {isSubmitting ? <LoadingSpinner /> : "Signin"}
             </CustomButton>
           </form>
         </Form>

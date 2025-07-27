@@ -6,7 +6,6 @@ import App from "./App.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 
 const rootElement = document.getElementById("root");
-console.log(rootElement); // <-- should not be null!
 
 if (rootElement) {
   createRoot(rootElement).render(

@@ -43,7 +43,7 @@ function SidebarItem({ pathname, Icon, name, isSubItem = false }: Props) {
           {" "}
           <SidebarMenuButton
             isActive={isActive}
-            className="py-4 ps-4 pr-2 data-[active=true]:bg-[var(--project-main)]"
+            className="py-4 ps-4 pr-2 data-[active=true]:bg-[var(--project-main)] hover:cursor-pointer"
             onClick={handleClick}
           >
             <Icon /> <span> {name} </span>
@@ -55,7 +55,7 @@ function SidebarItem({ pathname, Icon, name, isSubItem = false }: Props) {
         <SidebarMenuSubItem>
           <SidebarMenuButton
             isActive={isActive}
-            className="py-2 data-[active=true]:bg-[var(--project-main)]"
+            className="py-2 data-[active=true]:bg-[var(--project-main)] hover:cursor-pointer"
             onClick={handleClick}
           >
             <Icon /> <span> {name} </span>

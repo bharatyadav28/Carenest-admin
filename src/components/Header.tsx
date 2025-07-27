@@ -1,3 +1,6 @@
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { CgProfile as ProfileIcon } from "react-icons/cg";
@@ -11,7 +14,14 @@ import useGeneral from "@/store/features/general";
 
 function Header() {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const pageName = useGeneral((state) => state.pageName);
+
+  const handleLogout = () => {
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    navigate("/signin");
+  };
 
   return (
     <div className="flex justify-between items-center h-[3rem] my-2 w-full">
@@ -41,7 +51,7 @@ function Header() {
 
               <DropdownMenuItem
                 className="hover:cursor-pointer"
-                onClick={() => {}}
+                onClick={handleLogout}
               >
                 Logout
               </DropdownMenuItem>
