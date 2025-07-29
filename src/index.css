@@ -114,7 +114,8 @@
   --primary: #233d4d;
   --primary-foreground: #fff;
   --project-main: #233d4d;
-  --border-color: #23242a;
+  --green: rgb(16, 196, 105);
+  --lightgreen: rgb(103, 204, 154);
 }
 
 @layer base {
@@ -127,5 +128,29 @@
 }
 
 .input {
-  @apply py-4;
+  @apply py-5;
+}
+
+.main-container {
+  @apply pt-8 bg-[#0f0f0f]  pb-10 lg:px-6 px-4 rounded-sm flex flex-col gap-5;
+}
+
+.input-container {
+  @apply flex w-full lg:flex-row flex-col lg:gap-0 gap-2;
+}
+
+.input-container label {
+  @apply lg:w-[17.3rem] w-auto text-base font-medium shrink-0;
+}
+
+.main-container button[type="submit"] {
+  @apply lg:ml-[17.3rem];
+}
+
+.input-container .user-input {
+  @apply grow max-w-[47rem];
+}
+
+.green-button {
+  @apply bg-[var(--green)] hover:bg-[var(--lightgreen)] text-[#fff] transition-all;
 }

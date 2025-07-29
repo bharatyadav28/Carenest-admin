@@ -1,3 +1,6 @@
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+
 export function getTokenExpiration(token: string): number {
   const payload = JSON.parse(atob(token.split(".")[1]));
   const expInSec = payload.exp;
@@ -15,3 +18,9 @@ export function getCookieConfig(token: string) {
     secure: process.env.NODE_ENV === "production",
   };
 }
+
+// Show error toast
+export const showError = (error: unknown) => {
+  const axiosError = error as AxiosError<any>;
+  toast.error(axiosError?.response?.data?.message || "Failed to load profile");
+};

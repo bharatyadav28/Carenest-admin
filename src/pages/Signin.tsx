@@ -18,8 +18,12 @@ import { useSignin } from "@/store/data/users/hooks";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z.string().min(6, {
+  email: z
+    .string()
+    .trim()
+    .email({ message: "Please enter a valid email address" })
+    .transform((val) => val.toLowerCase()),
+  password: z.string().trim().min(6, {
     message: "Password must be at least 6 characters long",
   }),
 });

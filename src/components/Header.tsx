@@ -46,7 +46,9 @@ function Header() {
             <DropdownMenuContent>
               <DropdownMenuItem
                 className="hover:cursor-pointer"
-                onClick={() => {}}
+                onClick={() => {
+                  navigate("/profile");
+                }}
               >
                 Profile
               </DropdownMenuItem>

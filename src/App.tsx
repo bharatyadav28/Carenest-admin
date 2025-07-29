@@ -7,8 +7,10 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import NotFound from "./components/Notfound";
 import Signin from "./pages/Signin";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -19,6 +21,10 @@ function App() {
           index: true,
           Component: Home,
         },
+        {
+          path: "/profile",
+          Component: Profile,
+        },
       ],
     },
 
@@ -26,6 +32,7 @@ function App() {
       path: "/signin",
       Component: Signin,
     },
+
     {
       path: "*",
       Component: NotFound,

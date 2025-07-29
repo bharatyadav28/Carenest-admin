@@ -1,4 +1,4 @@
-import { HashLoader, ClipLoader } from "react-spinners";
+import { ClipLoader, PuffLoader } from "react-spinners";
 
 // Whole page loading spinner
 const PageLoadingSpinner = ({ isFullPage }: { isFullPage?: boolean }) => {
@@ -8,7 +8,7 @@ const PageLoadingSpinner = ({ isFullPage }: { isFullPage?: boolean }) => {
         !isFullPage ? "md:left-[16rem]" : ""
       } `}
     >
-      <HashLoader color="#ffffff" size={60} />
+      <PuffLoader color="#ffffff" size={60} />
     </div>
   );
 };
