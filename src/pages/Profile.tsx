@@ -36,7 +36,7 @@ const formSchema = z.object({
 function Profile() {
   const replacePageName = useGeneral((state) => state.replacePageName);
 
-  const { data, isLoading, error } = useProfile();
+  const { data, isFetching, error } = useProfile();
   console.log("Profile fetched:", data);
 
   const updateProfile = useUpdateProfile();
@@ -154,7 +154,7 @@ function Profile() {
         </Form>
       </div>
 
-      {isLoading && <PageLoadingSpinner />}
+      {isFetching && <PageLoadingSpinner />}
     </>
   );
 }

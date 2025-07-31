@@ -16,6 +16,7 @@ export function getCookieConfig(token: string) {
     expires: getTokenExpiration(token),
     sameSite: "Strict" as "Strict",
     secure: process.env.NODE_ENV === "production",
+    httpOnly: process.env.NODE_ENV === "production",
   };
 }
 
@@ -23,4 +24,59 @@ export function getCookieConfig(token: string) {
 export const showError = (error: unknown) => {
   const axiosError = error as AxiosError<any>;
   toast.error(axiosError?.response?.data?.message || "Failed to load profile");
+};
+
+// Format ISO to date,time
+export function formatDate(isoDate: string): string {
+  const date = new Date(isoDate);
+  const options: Intl.DateTimeFormatOptions = {
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
+  };
+  return new Intl.DateTimeFormat("en-IN", options).format(date);
+}
+
+// Formate String to Date short/long format
+export const convertToDate = (
+  date: string | undefined,
+  format: "short" | "long" = "short"
+): string | undefined => {
+  if (date) {
+    const d = new Date(date);
+    const month = d.getMonth() + 1; // Month is zero-indexed
+    const day = d.getDate();
+    const year = d.getFullYear();
+
+    if (format === "long") {
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      return `${monthNames[d.getMonth()]} ${day}, ${year}`;
+    } else {
+      return `${day < 10 ? "0" + day : day}/${
+        month < 10 ? "0" + month : month
+      }/${year}`;
+    }
+  }
+  return undefined;
+};
+
+export const convertToPascalCase = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };

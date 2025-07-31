@@ -1,5 +1,7 @@
 import { ClipLoader, PuffLoader } from "react-spinners";
 
+import { TableRow, TableCell } from "@/components/ui/table";
+
 // Whole page loading spinner
 const PageLoadingSpinner = ({ isFullPage }: { isFullPage?: boolean }) => {
   return (
@@ -10,6 +12,20 @@ const PageLoadingSpinner = ({ isFullPage }: { isFullPage?: boolean }) => {
     >
       <PuffLoader color="#ffffff" size={60} />
     </div>
+  );
+};
+
+export const TableLoader = ({ colSpan }: { colSpan?: number }) => {
+  return (
+    <TableRow>
+      <TableCell colSpan={colSpan || 1}>
+        <div className="flex justify-center items-center ">
+          {" "}
+          <PuffLoader color="#ffffff" size={60} />
+          {/* <LoadingSpinner color="var(--primary)" size={50} />{" "} */}
+        </div>
+      </TableCell>
+    </TableRow>
   );
 };
 

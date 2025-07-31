@@ -8,8 +8,17 @@ import Home from "./pages/Home";
 import NotFound from "./components/Notfound";
 import Signin from "./pages/Signin";
 import Profile from "./pages/Profile";
+import Bookings from "./pages/Booking/Bookings";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+      gcTime: 1000 * 60 * 30, // 30 minutes
+    },
+  },
+});
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +33,11 @@ function App() {
         {
           path: "/profile",
           Component: Profile,
+        },
+
+        {
+          path: "/bookings",
+          Component: Bookings,
         },
       ],
     },

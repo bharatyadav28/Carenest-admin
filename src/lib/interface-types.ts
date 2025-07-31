@@ -14,3 +14,25 @@ export interface complexSidebarLinkType {
   hasSubMenu?: boolean;
   subMenuItems?: simpleSidebarLinkType[];
 }
+
+export interface bookingType {
+  bookingId: string;
+  bookedOn: string;
+  appointmentDate: string;
+  duration: string;
+  status: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  service: string;
+}
+
+export interface bookingFiltersType {
+  page?: number;
+  search?: string;
+  bookedOn?: string;
+  appointmentDate?: string;
+  status?: string;
+}

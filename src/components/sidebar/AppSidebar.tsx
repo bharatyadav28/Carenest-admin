@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
-
 import { ChevronDown } from "lucide-react";
 import { MdDashboard as DashboardIcon } from "react-icons/md";
+import { FaCalendarAlt as BookingIcon } from "react-icons/fa";
 
 import {
   Sidebar,
@@ -33,6 +33,11 @@ function AppSidebar() {
       name: "Dashboard",
       Icon: DashboardIcon,
       path: "/",
+    },
+    {
+      name: "Bookings",
+      Icon: BookingIcon,
+      path: "/bookings",
     },
   ];
 

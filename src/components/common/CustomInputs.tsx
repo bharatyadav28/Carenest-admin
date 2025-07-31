@@ -1,6 +1,17 @@
+import { CiEdit as EditIcon } from "react-icons/ci";
+import { MdDelete as DeleteIcon } from "react-icons/md";
+
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { LoadingSpinner } from "../LoadingSpinner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Props extends React.InputHTMLAttributes<HTMLTextAreaElement> {
   maxChars?: number;
@@ -91,6 +102,48 @@ export const CustomInput = ({
   );
 };
 
+// Select Input with different menu item and its corresponding value
+interface SelectProps2 {
+  menu: { value: string; key: string }[];
+  value: string;
+  onChange:
+    | React.Dispatch<React.SetStateAction<string>>
+    | ((val: string) => void);
+  className?: string;
+  placeholder?: string;
+}
+export const CustomSelectSeperate = ({
+  menu,
+  value,
+  onChange,
+  className,
+  placeholder,
+  ...props
+}: SelectProps2) => {
+  const classes = `py-5 border-gray-400 ${className}`;
+
+  return (
+    <>
+      <Select onValueChange={onChange} value={value} {...props}>
+        <SelectTrigger
+          className={`${classes} [&>svg]:transition-transform [&>svg]:duration-200 [&[data-state=open]>svg]:rotate-180 !bg-inherit`}
+        >
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {menu?.map((item) => {
+            return (
+              <SelectItem key={item.key} value={item.value}>
+                {item.key}
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+    </>
+  );
+};
+
 interface BtnProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
   onClick?: () => void;
@@ -109,6 +162,42 @@ export const CustomButton = ({
   return (
     <Button className={classes} onClick={onClick} {...props}>
       {children}
+    </Button>
+  );
+};
+
+// Mutation buttons
+export const UpdateButton = ({ onClick, className, ...props }: BtnProps) => {
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      className={`green-button ${className} hover:cursor-pointer`}
+      onClick={onClick}
+      {...props}
+    >
+      <EditIcon size={20} />
+    </Button>
+  );
+};
+
+export const DeleteButton = ({
+  children,
+  onClick,
+  className,
+  isDeleting,
+  ...props
+}: BtnProps) => {
+  return (
+    <Button
+      variant="destructive"
+      size="icon"
+      className={`ml-2 ${className} hover:cursor-pointer`}
+      onClick={onClick}
+      disabled={isDeleting}
+      {...props}
+    >
+      {isDeleting ? <LoadingSpinner /> : <DeleteIcon size={20} />}
     </Button>
   );
 };

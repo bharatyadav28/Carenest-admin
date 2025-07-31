@@ -154,3 +154,28 @@
 .green-button {
   @apply bg-[var(--green)] hover:bg-[var(--lightgreen)] text-[#fff] transition-all;
 }
+
+.table-main-container {
+  @apply pt-8 bg-border  pb-10 lg:px-6 px-4 rounded-sm flex flex-col gap-5;
+}
+
+.custom-table th {
+  @apply text-gray-400;
+}
+
+.custom-table th,
+td {
+  @apply border border-gray-400  !py-4 !px-3;
+}
+
+.custom-table .action-btns {
+  @apply w-[10rem];
+}
+
+.green-button {
+  @apply !bg-[var(--green)] hover:!bg-[var(--lightgreen)] text-[#fff] transition-all;
+}
+
+.red-button {
+  @apply bg-[#990000] hover:bg-[#CC0000] text-[#fff] transition-all;
+}
