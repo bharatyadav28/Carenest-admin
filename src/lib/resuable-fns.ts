@@ -16,7 +16,7 @@ export function getCookieConfig(token: string) {
     expires: getTokenExpiration(token),
     sameSite: "Strict" as "Strict",
     secure: process.env.NODE_ENV === "production",
-    httpOnly: process.env.NODE_ENV === "production",
+    // httpOnly: process.env.NODE_ENV === "production",
   };
 }
 

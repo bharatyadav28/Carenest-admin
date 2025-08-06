@@ -145,7 +145,7 @@
   @apply lg:w-[17.3rem] w-auto text-base font-medium shrink-0;
 }
 
-button[type="submit"] {
+.table-main-container button[type="submit"] {
   @apply lg:ml-[17.3rem];
 }
 
