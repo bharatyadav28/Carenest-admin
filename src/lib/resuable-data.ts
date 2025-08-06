@@ -8,11 +8,12 @@ export const statusMenu = [
     value: "active",
   },
   {
-    key: "Completed",
-    value: "completed",
+    key: "Complete",
+    value: "complete",
   },
   {
-    key: "Cancelled",
+    key: "Cancel",
     value: "cancel",
   },
 ];
+export const cdnURL = "https://dev-carenest.s3.ap-south-1.amazonaws.com";

@@ -9,6 +9,7 @@ import NotFound from "./components/Notfound";
 import Signin from "./pages/Signin";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/Booking/Bookings";
+import BookingDetails from "./pages/Booking/BookingDetails";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,7 +38,16 @@ function App() {
 
         {
           path: "/bookings",
-          Component: Bookings,
+          children: [
+            {
+              index: true,
+              Component: Bookings,
+            },
+            {
+              path: ":id",
+              Component: BookingDetails,
+            },
+          ],
         },
       ],
     },

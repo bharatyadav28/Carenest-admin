@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
+import { useNavigate } from "react-router";
 
-import { useBookings } from "@/store/data/booking/hooks";
+import { useBookings, useCancelBooking } from "@/store/data/booking/hooks";
 import { bookingType } from "@/lib/interface-types";
 import { CustomInput } from "@/components/common/CustomInputs";
 import CustomPagination from "@/components/common/CustomPagination";
 import { statusMenu } from "@/lib/resuable-data";
 import { TableLoader } from "@/components/LoadingSpinner";
+import { EmptyTable } from "@/components/common/EmptyTable";
+import { DeleteDialog } from "@/components/common/CustomDialog";
 import {
   convertToDate,
   convertToPascalCase,
@@ -26,7 +29,6 @@ import {
   DeleteButton,
   UpdateButton,
 } from "@/components/common/CustomInputs";
-import { EmptyTable } from "@/components/common/EmptyTable";
 
 function Bookings() {
   const [search, setSearch] = useState("");
@@ -35,6 +37,10 @@ function Bookings() {
   const [bookedOn, setBookenOn] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
   const [status, setStatus] = useState("");
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<bookingType | null>(
+    null
+  );
 
   const filters = useMemo(
     () => ({
@@ -47,9 +53,24 @@ function Bookings() {
     [currentPage, debouncedSearch, bookedOn, appointmentDate, status]
   );
 
-  console.log("Filters:", filters);
-
   const { data, isFetching, error } = useBookings(filters);
+  const cancelBooking = useCancelBooking();
+  const navigate = useNavigate();
+
+  const handleDeleteDialog = () => {
+    setOpenDeleteDialog((prev) => !prev);
+  };
+
+  const handleDeleteBooking = () => {
+    if (!selectedBooking) return;
+
+    cancelBooking.mutate(selectedBooking.bookingId, {
+      onSuccess: () => {
+        setSelectedBooking(null);
+        handleDeleteDialog();
+      },
+    });
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,6 +89,9 @@ function Bookings() {
 
   const bookings: bookingType[] = data?.data?.bookings || [];
   const totalPages = data?.data?.pagesCount || 1;
+  const noBookings = bookings.length === 0;
+
+  console.log("Selected Booking:", selectedBooking);
 
   return (
     <>
@@ -136,44 +160,70 @@ function Bookings() {
 
           <TableBody>
             {isFetching && <TableLoader colSpan={7} />}
-            {!isFetching && bookings.length === 0 && (
+            {!isFetching && noBookings && (
               <EmptyTable colSpan={7} text="No bookings found" />
             )}
-            {bookings.map((booking) => (
-              <TableRow key={booking.bookingId}>
-                <TableCell>{booking.bookingId}</TableCell>
-                <TableCell>{booking.user.email}</TableCell>
-                <TableCell>{convertToDate(booking.bookedOn)}</TableCell>
-                <TableCell>{convertToDate(booking.appointmentDate)}</TableCell>
-                <TableCell>{booking.service}</TableCell>
-                <TableCell>
-                  <span
-                    className={
-                      booking.status === "confirmed" ||
-                      booking.status === "active"
-                        ? "text-green-600 text-xs font-medium"
-                        : booking.status === "pending"
-                        ? "text-orange-600 text-xs font-medium"
-                        : booking.status === "completed"
-                        ? "text-blue-600 text-xs font-medium"
-                        : booking.status === "cancelled"
-                        ? "text-red-600 px-2 py-1 rounded-full text-xs font-medium"
-                        : "text-gray-600 px-2 py-1 rounded-full text-xs font-medium"
-                    }
-                  >
-                    {convertToPascalCase(booking.status)}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <div className="flex">
-                    <UpdateButton onClick={() => {}} />
-                    <DeleteButton />
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+            {!isFetching &&
+              !noBookings &&
+              bookings.map((booking) => (
+                <TableRow key={booking.bookingId}>
+                  <TableCell>{booking.bookingId}</TableCell>
+                  <TableCell>{booking.user.email}</TableCell>
+                  <TableCell>{convertToDate(booking.bookedOn)}</TableCell>
+                  <TableCell>
+                    {convertToDate(booking.appointmentDate)}
+                  </TableCell>
+                  <TableCell>{booking.service}</TableCell>
+                  <TableCell>
+                    <span
+                      className={
+                        booking.status === "confirmed" ||
+                        booking.status === "active"
+                          ? "text-green-600 text-xs font-medium"
+                          : booking.status === "pending"
+                          ? "text-orange-600 text-xs font-medium"
+                          : booking.status === "completed"
+                          ? "text-blue-600 text-xs font-medium"
+                          : booking.status === "cancel"
+                          ? "text-red-600 rounded-full text-xs font-medium"
+                          : "text-gray-600 rounded-full text-xs font-medium"
+                      }
+                    >
+                      {convertToPascalCase(booking.status)}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex">
+                      <UpdateButton
+                        onClick={() => {
+                          navigate(`/bookings/${booking.bookingId}`);
+                        }}
+                      />
+                      <DeleteButton
+                        onClick={() => {
+                          handleDeleteDialog();
+                          setSelectedBooking(booking);
+                        }}
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
+
+        <DeleteDialog
+          openDialog={openDeleteDialog}
+          handleOpenDialog={handleDeleteDialog}
+          title="Cancel Booking"
+          description="Are you sure you want to cancel this booking?"
+          onCancel={() => {
+            handleDeleteDialog();
+            setSelectedBooking(null);
+          }}
+          onConfirm={handleDeleteBooking}
+          isDeleting={cancelBooking?.isPending}
+        />
 
         {totalPages > 1 && (
           <CustomPagination

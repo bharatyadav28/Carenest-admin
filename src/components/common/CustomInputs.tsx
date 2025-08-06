@@ -1,5 +1,7 @@
 import { CiEdit as EditIcon } from "react-icons/ci";
 import { MdDelete as DeleteIcon } from "react-icons/md";
+import { FiPlus as PlusIcon } from "react-icons/fi";
+import { FaEye } from "react-icons/fa";
 
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
@@ -121,7 +123,7 @@ export const CustomSelectSeperate = ({
   ...props
 }: SelectProps2) => {
   const classes = `py-5 border-gray-400 ${className}`;
-
+  console.log("Value:", value);
   return (
     <>
       <Select onValueChange={onChange} value={value} {...props}>
@@ -198,6 +200,34 @@ export const DeleteButton = ({
       {...props}
     >
       {isDeleting ? <LoadingSpinner /> : <DeleteIcon size={20} />}
+    </Button>
+  );
+};
+
+export const ViewButton = ({ onClick, className, ...props }: BtnProps) => {
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      className={`!bg-[var(--golden)] !hover:bg-[var(--dark-golden)] ${className} transition hover:cursor-pointer`}
+      onClick={onClick}
+      {...props}
+    >
+      <FaEye size={20} />
+    </Button>
+  );
+};
+
+export const AssignButton = ({ onClick, className, ...props }: BtnProps) => {
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      className={`green-button ${className} hover:cursor-pointer`}
+      onClick={onClick}
+      {...props}
+    >
+      <PlusIcon size={20} />
     </Button>
   );
 };

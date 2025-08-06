@@ -36,3 +36,17 @@ export interface bookingFiltersType {
   appointmentDate?: string;
   status?: string;
 }
+
+export interface caregiverType {
+  id: string;
+  name: string;
+  avatar: string;
+  email: string;
+  isUsersChoice: boolean;
+  isFinalSelection: boolean;
+  minExperience: number;
+  maxExperience: number;
+  minPrice: number;
+  maxPrice: number;
+  isDeleted: boolean;
+}

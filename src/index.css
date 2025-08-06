@@ -116,6 +116,8 @@
   --project-main: #233d4d;
   --green: rgb(16, 196, 105);
   --lightgreen: rgb(103, 204, 154);
+  --golden: #caa257;
+  --dark-golden: #9e8622;
 }
 
 @layer base {
@@ -143,7 +145,7 @@
   @apply lg:w-[17.3rem] w-auto text-base font-medium shrink-0;
 }
 
-.main-container button[type="submit"] {
+button[type="submit"] {
   @apply lg:ml-[17.3rem];
 }
 
@@ -178,4 +180,14 @@ td {
 
 .red-button {
   @apply bg-[#990000] hover:bg-[#CC0000] text-[#fff] transition-all;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 8px;
+  cursor: pointer;
+}
+
+.date-input {
+  position: relative;
 }
