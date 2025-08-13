@@ -30,11 +30,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CustomButton } from "@/components/common/CustomInputs";
-import CaregiverCard from "@/components/booking/CaregiverCard";
+import CaregiverCard from "@/components/bookings/CaregiverCard";
 import { caregiverType } from "@/lib/interface-types";
 import { DeleteDialog } from "@/components/common/CustomDialog";
-import CaregiverMenu from "@/components/booking/CaregiverMenu";
-import AddMoreCard from "@/components/booking/AddMoreCard";
+import CaregiverMenu from "@/components/bookings/CaregiverMenu";
+import AddMoreCard from "@/components/bookings/AddMoreCard";
 
 const formSchema = z.object({
   appointmentDate: z

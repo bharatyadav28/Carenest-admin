@@ -8,8 +8,8 @@ import Home from "./pages/Home";
 import NotFound from "./components/Notfound";
 import Signin from "./pages/Signin";
 import Profile from "./pages/Profile";
-import Bookings from "./pages/booking/Bookings";
-import BookingDetails from "./pages/booking/BookingDetails";
+import Bookings from "./pages/bookings/Bookings";
+import BookingDetails from "./pages/bookings/BookingDetails";
 
 const queryClient = new QueryClient({
   defaultOptions: {
