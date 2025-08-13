@@ -16,7 +16,6 @@ export const signin = async ({ email, password }: signinPayloadType) => {
 
 export const fetchProfile = async () => {
   const { data } = await axiosInstance.get("/api/v1/admin/profile");
-  console.log("Data", data);
   return data;
 };
 
@@ -27,5 +26,14 @@ interface profilePayloadType {
 }
 export const updateProfile = async (payload: profilePayloadType) => {
   const { data } = await axiosInstance.put("/api/v1/admin/profile", payload);
+  return data;
+};
+
+export const fetchGivers = async (search: string) => {
+  const { data } = await axiosInstance.get("/api/v1/giver", {
+    params: {
+      search,
+    },
+  });
   return data;
 };

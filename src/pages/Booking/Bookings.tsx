@@ -91,8 +91,6 @@ function Bookings() {
   const totalPages = data?.data?.pagesCount || 1;
   const noBookings = bookings.length === 0;
 
-  console.log("Selected Booking:", selectedBooking);
-
   return (
     <>
       <div className="table-main-container">

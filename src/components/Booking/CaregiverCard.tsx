@@ -22,10 +22,13 @@ function CaregiverCard({
     handleDeleteDialog();
   };
 
+  const isFinalSelection =
+    caregiver?.status === "active" || caregiver?.status === "completed";
+
   return (
     <div
       className={`relative group p-6 rounded-xl border-2 transition-all duration-300 md:w-[15rem] hover:scale-105 hover:shadow-lg hover:cursor-pointer ${
-        caregiver.isFinalSelection
+        isFinalSelection
           ? "border-emerald-400 bg-gradient-to-br from-emerald-900/30 to-emerald-800/20 shadow-emerald-500/20"
           : "border-slate-600 bg-gradient-to-br from-slate-800/50 to-slate-700/30 hover:border-slate-500 hover:shadow-slate-500/10"
       }`}
@@ -36,7 +39,7 @@ function CaregiverCard({
       </div>
 
       {/* Selection Indicator */}
-      {caregiver.isFinalSelection && (
+      {isFinalSelection && (
         <div className="absolute top-3 left-3">
           <div className="w-5 h-5 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
             <svg
@@ -87,7 +90,7 @@ function CaregiverCard({
       <div className="mt-3 flex justify-center">
         <span
           className={`text-xs px-3 py-1 rounded-full font-medium ${
-            caregiver.isFinalSelection
+            isFinalSelection
               ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
               : "bg-slate-600/30 text-slate-400 border border-slate-500/30"
           }`}

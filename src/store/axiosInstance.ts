@@ -73,7 +73,6 @@ const refreshAccessToken = async (): Promise<string> => {
 // Request interceptor to add access token
 axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token: string | undefined = Cookies.get("accessToken");
-  console.log("Access Token:", token);
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }

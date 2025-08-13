@@ -30,9 +30,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CustomButton } from "@/components/common/CustomInputs";
-import CaregiverCard from "@/components/Booking/CaregiverCard";
+import CaregiverCard from "@/components/booking/CaregiverCard";
 import { caregiverType } from "@/lib/interface-types";
 import { DeleteDialog } from "@/components/common/CustomDialog";
+import CaregiverMenu from "@/components/booking/CaregiverMenu";
+import AddMoreCard from "@/components/booking/AddMoreCard";
 
 const formSchema = z.object({
   appointmentDate: z
@@ -47,6 +49,7 @@ function BookingDetails() {
   const { id } = useParams();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openActionDialog, setOpenActionDialog] = useState(false);
+  const [openCaregiverMenu, setOpenCaregiverMenu] = useState(false);
 
   const [choosenGiver, setChoosenGiver] = useState<caregiverType | null>(null);
   const [action, setAction] = useState("");
@@ -67,6 +70,10 @@ function BookingDetails() {
 
   const handleActionDialog = () => {
     setOpenActionDialog((prev) => !prev);
+  };
+
+  const handleOpenCaregiverMenu = () => {
+    setOpenCaregiverMenu((prev) => !prev);
   };
 
   const handleAssignCaregiver = () => {
@@ -115,7 +122,6 @@ function BookingDetails() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (!id) return;
-    console.log("Form submitted with values:", values);
     updateBookingDetails.mutate({
       bookingId: id,
       updatedData: {
@@ -146,8 +152,6 @@ function BookingDetails() {
   useEffect(() => {
     replacePageName("Booking Details");
   }, []);
-
-  console.log("values:", form.getValues());
 
   return (
     <>
@@ -249,7 +253,7 @@ function BookingDetails() {
         <div className="input-container">
           <label>Caregivers</label>
           <div className="flex flex-wrap gap-4">
-            {booking?.caregivers?.length > 0 ? (
+            {booking?.caregivers?.length > 0 &&
               booking.caregivers.map((caregiver: caregiverType) => (
                 <CaregiverCard
                   key={caregiver.id}
@@ -257,10 +261,9 @@ function BookingDetails() {
                   handleDeleteDialog={handleDeleteDialog}
                   setChoosenGiver={setChoosenGiver}
                 />
-              ))
-            ) : (
-              <p>No caregivers selected.</p>
-            )}
+              ))}
+
+            <AddMoreCard handleOpenCaregiverMenu={handleOpenCaregiverMenu} />
           </div>
         </div>
 
@@ -313,6 +316,13 @@ function BookingDetails() {
         }}
         onConfirm={handleActionConfirmm}
         isDeleting={cancelBooking?.isPending || completeBooking?.isPending}
+      />
+
+      <CaregiverMenu
+        open={openCaregiverMenu}
+        handleOpen={handleOpenCaregiverMenu}
+        handleDeleteDialog={handleDeleteDialog}
+        setChoosenGiver={setChoosenGiver}
       />
 
       {isFetching && <PageLoadingSpinner />}

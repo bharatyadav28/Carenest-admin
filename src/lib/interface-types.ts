@@ -43,7 +43,7 @@ export interface caregiverType {
   avatar: string;
   email: string;
   isUsersChoice: boolean;
-  isFinalSelection: boolean;
+  status: string;
   minExperience: number;
   maxExperience: number;
   minPrice: number;

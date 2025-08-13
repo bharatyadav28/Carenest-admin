@@ -40,4 +40,16 @@ const LoadingSpinner = ({ size, color }: { size?: number; color?: string }) => {
   );
 };
 
+export const ContainerLoader = ({ className }: { className?: string }) => {
+  return (
+    <div
+      className={`flex justify-center items-center w-full h-full ${className}`}
+    >
+      <div>
+        <PuffLoader color="#ffffff" size={60} />
+      </div>
+    </div>
+  );
+};
+
 export { PageLoadingSpinner, LoadingSpinner };

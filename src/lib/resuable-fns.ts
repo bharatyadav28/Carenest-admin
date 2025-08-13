@@ -28,9 +28,7 @@ export const showError = (error: unknown) => {
 
 // Format ISO to date,time
 export function formatDate(isoDate: string): string {
-  console.log("ISO Date:", isoDate);
   const date = new Date(isoDate);
-  console.log("Formatted Date:", date);
   const options: Intl.DateTimeFormatOptions = {
     month: "2-digit",
     day: "2-digit",
@@ -40,10 +38,7 @@ export function formatDate(isoDate: string): string {
     hour12: true,
     timeZone: "Asia/Kolkata",
   };
-  console.log(
-    "Formatted Options:",
-    new Intl.DateTimeFormat("en-IN", options).format(date)
-  );
+
   return new Intl.DateTimeFormat("en-IN", options).format(date);
 }
 

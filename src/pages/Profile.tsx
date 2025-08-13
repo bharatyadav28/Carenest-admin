@@ -37,7 +37,6 @@ function Profile() {
   const replacePageName = useGeneral((state) => state.replacePageName);
 
   const { data, isFetching, error } = useProfile();
-  console.log("Profile fetched:", data);
 
   const updateProfile = useUpdateProfile();
 

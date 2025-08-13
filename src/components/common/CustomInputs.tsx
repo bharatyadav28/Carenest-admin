@@ -123,7 +123,6 @@ export const CustomSelectSeperate = ({
   ...props
 }: SelectProps2) => {
   const classes = `py-5 border-gray-400 ${className}`;
-  console.log("Value:", value);
   return (
     <>
       <Select onValueChange={onChange} value={value} {...props}>
