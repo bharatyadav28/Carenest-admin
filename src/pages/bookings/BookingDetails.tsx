@@ -35,14 +35,11 @@ import { caregiverType } from "@/lib/interface-types";
 import { DeleteDialog } from "@/components/common/CustomDialog";
 import CaregiverMenu from "@/components/bookings/CaregiverMenu";
 import AddMoreCard from "@/components/bookings/AddMoreCard";
+import WeeklySchedule from "@/components/bookings/WeeklySchedule";
 
 const formSchema = z.object({
-  appointmentDate: z
-    .string()
-    .min(1, { message: "Appointment date is required" }),
-  duration: z
-    .number()
-    .min(1, { message: "Duration in days must be at least 1" }),
+  startDate: z.string().min(1, { message: "Start date is required" }),
+  endDate: z.string().min(1, { message: "End date is required" }),
 });
 
 function BookingDetails() {
@@ -115,8 +112,8 @@ function BookingDetails() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      appointmentDate: "",
-      duration: 1,
+      startDate: "",
+      endDate: "",
     },
   });
 
@@ -125,8 +122,8 @@ function BookingDetails() {
     updateBookingDetails.mutate({
       bookingId: id,
       updatedData: {
-        appointmentDate: values.appointmentDate,
-        duration: values.duration,
+        startDate: values.startDate,
+        endDate: values.endDate,
       },
     });
   }
@@ -137,8 +134,8 @@ function BookingDetails() {
   useEffect(() => {
     if (booking) {
       reset({
-        appointmentDate: booking?.appointmentDate || "",
-        duration: Number(booking?.duration) || 1,
+        startDate: booking?.startDate || "",
+        endDate: booking?.endDate || "",
       });
     }
   }, [booking, reset]);
@@ -163,7 +160,9 @@ function BookingDetails() {
 
         <div className="input-container mb-[0.1rem]">
           <label>Service </label>
-          <div>{booking?.service}</div>
+          <div>
+            {booking?.services?.map((service) => service.name).join(", ")}
+          </div>
         </div>
 
         <div className="input-container mb-[0.1rem]">
@@ -184,8 +183,13 @@ function BookingDetails() {
         )}
 
         <div className="input-container mb-[0.4rem]">
-          <label>Careseeker </label>
+          <label>Careseeker email </label>
           <div>{booking?.user?.email}</div>
+        </div>
+
+        <div className="input-container mb-[0.4rem]">
+          <label>Careseeker mobile </label>
+          <div>{booking?.user?.mobile}</div>
         </div>
 
         {!isFetching && booking && (
@@ -193,10 +197,10 @@ function BookingDetails() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
-                name="appointmentDate"
+                name="startDate"
                 render={({ field }) => (
                   <FormItem className="input-container">
-                    <FormLabel>Appointment Date</FormLabel>
+                    <FormLabel>Start Date</FormLabel>
                     <div className="user-input">
                       <FormControl>
                         <Input
@@ -214,21 +218,17 @@ function BookingDetails() {
 
               <FormField
                 control={form.control}
-                name="duration"
+                name="endDate"
                 render={({ field }) => (
                   <FormItem className="input-container">
-                    <FormLabel>Duration (days)</FormLabel>
+                    <FormLabel>End Date</FormLabel>
                     <div className="user-input">
                       <FormControl>
                         <Input
-                          type="number"
-                          min={1}
-                          placeholder="Enter duration in days"
+                          type="date"
+                          placeholder="Enter end date"
                           {...field}
-                          className="input"
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
+                          className=" !w-full date-input input"
                         />
                       </FormControl>
                       <FormMessage />
@@ -249,12 +249,17 @@ function BookingDetails() {
         )}
       </div>
 
+      <WeeklySchedule
+        weeklySchedule={booking?.weeklySchedule}
+        bookingId={booking?.bookingId}
+      />
+
       <div className="table-main-container mt-8">
         <div className="input-container">
           <label>Caregivers</label>
           <div className="flex flex-wrap gap-4">
-            {booking?.caregivers?.length > 0 &&
-              booking.caregivers.map((caregiver: caregiverType) => (
+            {booking?.caregivers &&
+              booking?.caregivers.map((caregiver: caregiverType) => (
                 <CaregiverCard
                   key={caregiver.id}
                   caregiver={caregiver}
@@ -276,7 +281,7 @@ function BookingDetails() {
                 handleActionDialog();
               }}
             >
-              Mark as Complete
+              Mark as Completed
             </CustomButton>
             <CustomButton
               onClick={() => {
@@ -284,7 +289,7 @@ function BookingDetails() {
                 handleActionDialog();
               }}
             >
-              Mark as Cancel
+              Mark as Cancelled
             </CustomButton>
           </div>
         </div>

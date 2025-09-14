@@ -1,6 +1,11 @@
 import type { IconType } from "react-icons/lib";
 
 // Sidebar types
+
+export interface responseType {
+  success: boolean;
+  message: string;
+}
 export interface simpleSidebarLinkType {
   name: string;
   path: string;
@@ -15,28 +20,26 @@ export interface complexSidebarLinkType {
   subMenuItems?: simpleSidebarLinkType[];
 }
 
-export interface bookingType {
-  bookingId: string;
-  bookedOn: string;
-  appointmentDate: string;
-  duration: string;
-  status: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  service: string;
-}
-
 export interface bookingFiltersType {
   page?: number;
   search?: string;
   bookedOn?: string;
-  appointmentDate?: string;
+  startDate?: string;
+  endDate?: string;
   status?: string;
 }
 
+export interface serviceType {
+  id: string;
+  name: string;
+}
+
+export interface careseekerType {
+  id: string;
+  name: string;
+  email: string;
+  mobile: string;
+}
 export interface caregiverType {
   id: string;
   name: string;
@@ -49,4 +52,26 @@ export interface caregiverType {
   minPrice: number;
   maxPrice: number;
   isDeleted: boolean;
+}
+
+export interface weeklyScheduleType {
+  id?: string;
+  weekDay: string;
+  startTime: string;
+  endTime: string;
+}
+
+export interface bookingType {
+  bookingId: string;
+  bookedOn: string;
+  startDate: string;
+  endDate?: string;
+  duration: string;
+  status: string;
+  services: serviceType[];
+  user: careseekerType;
+  service: string;
+  cancelledAt: string;
+  caregivers: caregiverType[];
+  weeklySchedule: weeklyScheduleType[];
 }

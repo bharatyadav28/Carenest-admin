@@ -36,6 +36,8 @@ function Bookings() {
   const [currentPage, setCurrentPage] = useState(1);
   const [bookedOn, setBookenOn] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const [status, setStatus] = useState("");
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<bookingType | null>(
@@ -47,10 +49,11 @@ function Bookings() {
       page: currentPage,
       search: debouncedSearch?.trim(),
       bookedOn,
-      appointmentDate,
+      startDate: appointmentDate,
+      endDate,
       status,
     }),
-    [currentPage, debouncedSearch, bookedOn, appointmentDate, status]
+    [currentPage, debouncedSearch, bookedOn, appointmentDate, status, endDate]
   );
 
   const { data, isFetching, error } = useBookings(filters);
@@ -128,14 +131,28 @@ function Bookings() {
           </div>
 
           <div className="flex items-center px-2 gap-2 md:w-max w-full  bg-inherit border border-gray-400 rounded-md  py-[0.6rem]">
-            <div className="text-sm ">Appointment </div>
+            <div className="text-sm whitespace-nowrap">Start date </div>
             <input
               className="w-full bg-inherit  border-none rounded-md  text-sm !m-0"
               type="date"
-              placeholder="filter by Appointment Date"
+              placeholder="filter by Start Date"
               value={appointmentDate}
               onChange={(e) => {
                 setAppointmentDate(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+
+          <div className="flex items-center px-2 gap-2 md:w-max w-full  bg-inherit border border-gray-400 rounded-md  py-[0.6rem]">
+            <div className="text-sm whitespace-nowrap">End date </div>
+            <input
+              className="w-full bg-inherit  border-none rounded-md  text-sm !m-0"
+              type="date"
+              placeholder="filter by End Date"
+              value={endDate}
+              onChange={(e) => {
+                setEndDate(e.target.value);
                 setCurrentPage(1);
               }}
             />
@@ -148,8 +165,8 @@ function Bookings() {
               <TableHead>Booking Id</TableHead>
               <TableHead>Careseeker</TableHead>
               <TableHead>Booked On</TableHead>
-              <TableHead>Appointment Date</TableHead>
-              <TableHead>Service</TableHead>
+              <TableHead>Start Date</TableHead>
+              <TableHead>End Date</TableHead>
               <TableHead>Status</TableHead>
 
               <TableHead>Action</TableHead>
@@ -168,10 +185,8 @@ function Bookings() {
                   <TableCell>{booking.bookingId}</TableCell>
                   <TableCell>{booking.user.email}</TableCell>
                   <TableCell>{convertToDate(booking.bookedOn)}</TableCell>
-                  <TableCell>
-                    {convertToDate(booking.appointmentDate)}
-                  </TableCell>
-                  <TableCell>{booking.service}</TableCell>
+                  <TableCell>{convertToDate(booking.startDate)}</TableCell>
+                  <TableCell>{convertToDate(booking.endDate)}</TableCell>
                   <TableCell>
                     <span
                       className={

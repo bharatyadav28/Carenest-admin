@@ -149,7 +149,8 @@
   @apply lg:ml-[17.3rem];
 }
 
-.input-container .user-input {
+.input-container .user-input,
+.input-container .sub-table-container {
   @apply grow max-w-[47rem];
 }
 

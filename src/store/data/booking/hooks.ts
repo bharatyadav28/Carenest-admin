@@ -2,15 +2,23 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import {
+  addNewWeeklySchedule,
   assignCaregiver,
   cancelBooking,
   completeBooking,
+  deleteWeeklySchedule,
   fetchBookingById,
   fetchBookings,
   updateBookingDetails,
   updatedDataType,
+  updateWeeklySchedule,
 } from "./api";
-import { bookingFiltersType } from "@/lib/interface-types";
+import {
+  bookingFiltersType,
+  bookingType,
+  responseType,
+  weeklyScheduleType,
+} from "@/lib/interface-types";
 import { showError } from "@/lib/resuable-fns";
 
 export const useBookings = (filters: bookingFiltersType) => {
@@ -36,8 +44,14 @@ export const useCancelBooking = () => {
   });
 };
 
+interface bookingByIdResponse extends responseType {
+  data: {
+    booking: bookingType;
+  };
+}
+
 export const useBookingById = (bookingId: string) => {
-  return useQuery({
+  return useQuery<bookingByIdResponse>({
     queryKey: ["bookings", bookingId],
     queryFn: () => fetchBookingById(bookingId),
   });
@@ -86,6 +100,74 @@ export const useUpdateBookingDetails = () => {
       bookingId: string;
       updatedData: updatedDataType;
     }) => updateBookingDetails(bookingId, updatedData),
+
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+    },
+
+    onError: (error) => {
+      showError(error);
+    },
+  });
+};
+
+export const useAddNewWeeklySchedule = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      bookingId,
+      scheduledData,
+    }: {
+      bookingId: string;
+      scheduledData: weeklyScheduleType;
+    }) => addNewWeeklySchedule(bookingId, scheduledData),
+
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+    },
+
+    onError: (error) => {
+      showError(error);
+    },
+  });
+};
+
+export const useUpdateWeeklySchedule = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      bookingId,
+      scheduledData,
+      scheduleId,
+    }: {
+      bookingId: string;
+      scheduledData: weeklyScheduleType;
+      scheduleId: string;
+    }) => updateWeeklySchedule(bookingId, scheduleId, scheduledData),
+
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+    },
+
+    onError: (error) => {
+      showError(error);
+    },
+  });
+};
+
+export const useDeleteWeeklySchedule = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      bookingId,
+      scheduleId,
+    }: {
+      bookingId: string;
+      scheduleId: string;
+    }) => deleteWeeklySchedule(bookingId, scheduleId),
 
     onSuccess: (data) => {
       toast.success(data?.message);

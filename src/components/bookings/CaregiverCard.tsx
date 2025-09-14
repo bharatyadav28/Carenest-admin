@@ -23,7 +23,7 @@ function CaregiverCard({
   };
 
   const isFinalSelection =
-    caregiver?.status === "active" || caregiver?.status === "completed";
+    caregiver?.status === "hired" || caregiver?.status === "completed";
 
   return (
     <div
@@ -62,7 +62,7 @@ function CaregiverCard({
         <div className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center shadow-xl ring-2 ring-slate-500/50">
           {caregiver.avatar ? (
             <img
-              src={`${cdnURL}/${caregiver.avatar}`}
+              src={`${cdnURL}${caregiver.avatar}`}
               alt={caregiver.name}
               className="w-full h-full object-cover"
             />
