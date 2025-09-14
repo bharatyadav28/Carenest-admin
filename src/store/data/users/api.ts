@@ -1,4 +1,7 @@
+import { formSchema as createGiverSchema } from "@/components/user-management/GiverForm";
 import axiosInstance from "@/store/axiosInstance";
+import { create } from "domain";
+import z from "zod";
 
 interface signinPayloadType {
   email: string;
@@ -34,6 +37,15 @@ export const fetchGivers = async (search: string) => {
     params: {
       search,
     },
+  });
+  return data;
+};
+
+type createCaregiverPayloadType = z.infer<typeof createGiverSchema>;
+export const createCaregiver = async (payload: createCaregiverPayloadType) => {
+  const { data } = await axiosInstance.post("/api/v1/admin/giver", {
+    ...payload,
+    zipcode: Number(payload.zipcode),
   });
   return data;
 };

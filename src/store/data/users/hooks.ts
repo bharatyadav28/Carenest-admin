@@ -2,7 +2,13 @@ import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
-import { fetchGivers, fetchProfile, signin, updateProfile } from "./api";
+import {
+  createCaregiver,
+  fetchGivers,
+  fetchProfile,
+  signin,
+  updateProfile,
+} from "./api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCookieConfig } from "@/lib/resuable-fns";
 import { toast } from "sonner";
@@ -55,5 +61,20 @@ export const useGivers = (search: string) => {
   return useQuery({
     queryKey: ["givers", search],
     queryFn: () => fetchGivers(search),
+  });
+};
+
+export const useCreateGiver = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createCaregiver,
+
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      queryClient.invalidateQueries({ queryKey: ["givers"] });
+    },
+    onError: (error: AxiosError<any>) => {
+      toast.error(error?.response?.data?.message || "Creation failed");
+    },
   });
 };

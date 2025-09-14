@@ -11,11 +11,13 @@ interface Props {
   caregiver: caregiverType;
   handleDeleteDialog: () => void;
   setChoosenGiver: (giver: caregiverType | null) => void;
+  isMenu?: boolean;
 }
 function CaregiverCard({
   caregiver,
   handleDeleteDialog,
   setChoosenGiver,
+  isMenu,
 }: Props) {
   const handleAssign = () => {
     setChoosenGiver(caregiver);
@@ -87,17 +89,19 @@ function CaregiverCard({
       </div>
 
       {/* Status Indicator */}
-      <div className="mt-3 flex justify-center">
-        <span
-          className={`text-xs px-3 py-1 rounded-full font-medium ${
-            isFinalSelection
-              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-              : "bg-slate-600/30 text-slate-400 border border-slate-500/30"
-          }`}
-        >
-          {caregiver.isUsersChoice ? "User's choice" : "Admin's choice"}
-        </span>
-      </div>
+      {!isMenu && (
+        <div className="mt-3 flex justify-center">
+          <span
+            className={`text-xs px-3 py-1 rounded-full font-medium ${
+              isFinalSelection
+                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                : "bg-slate-600/30 text-slate-400 border border-slate-500/30"
+            }`}
+          >
+            {caregiver.isUsersChoice ? "User's choice" : "Admin's choice"}
+          </span>
+        </div>
+      )}
 
       <div className="absolute inset-0  bg-opacity-20 rounded-xl border-none backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 ">
         <Tooltip>
@@ -107,12 +111,14 @@ function CaregiverCard({
           <TooltipContent>Assign</TooltipContent>
         </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger>
-            <ViewButton className="border-none " />
-          </TooltipTrigger>
-          <TooltipContent>View profile</TooltipContent>
-        </Tooltip>
+        {false && (
+          <Tooltip>
+            <TooltipTrigger>
+              <ViewButton className="border-none " />
+            </TooltipTrigger>
+            <TooltipContent>View profile</TooltipContent>
+          </Tooltip>
+        )}
       </div>
     </div>
   );

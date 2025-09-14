@@ -14,6 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Props extends React.InputHTMLAttributes<HTMLTextAreaElement> {
   maxChars?: number;
@@ -228,5 +233,29 @@ export const AssignButton = ({ onClick, className, ...props }: BtnProps) => {
     >
       <PlusIcon size={20} />
     </Button>
+  );
+};
+
+export const AddButton = ({
+  onClick,
+  className,
+  tooltipContent,
+  ...props
+}: BtnProps & { tooltipContent?: string }) => {
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <Button
+          size={"icon"}
+          variant="outline"
+          className={`size-5 rounded-full hover:cursor-pointer ${className}`}
+          onClick={onClick}
+          {...props}
+        >
+          <PlusIcon size={20} />
+        </Button>
+      </TooltipTrigger>
+      {tooltipContent && <TooltipContent>{tooltipContent}</TooltipContent>}
+    </Tooltip>
   );
 };

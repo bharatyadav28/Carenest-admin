@@ -12,7 +12,7 @@ import {
 import { TableLoader } from "../LoadingSpinner";
 import { weeklyScheduleType } from "@/lib/interface-types";
 import { weekNumMapping } from "@/lib/resuable-data";
-import { DeleteButton, UpdateButton } from "../common/CustomInputs";
+import { AddButton, DeleteButton, UpdateButton } from "../common/CustomInputs";
 import { EmptyTable } from "../common/EmptyTable";
 import ScheduleForm from "./ScheduleForm";
 import { Button } from "../ui/button";
@@ -55,16 +55,14 @@ function WeeklySchedule({ weeklySchedule, bookingId }: Props) {
           <label>
             <div className="flex gap-2 items-center">
               <div> Weekly Schedule</div>
-              <Button
-                size={"icon"}
-                className="size-5 rounded-full hover:cursor-pointer"
+
+              <AddButton
                 onClick={() => {
                   handleOpenForm();
                   setSelectedSchedule(null);
                 }}
-              >
-                <PlusIcon />
-              </Button>
+                tooltipContent="Add new schedule"
+              />
             </div>
           </label>
           <div className="flex flex-wrap gap-4  sub-table-container">
