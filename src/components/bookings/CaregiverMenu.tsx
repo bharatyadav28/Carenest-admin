@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 
 import CustomSheet from "@/components/common/CustomSheet";
 import { useGivers } from "@/store/data/users/hooks";
-import { AddButton, CustomButton, CustomInput } from "../common/CustomInputs";
+import { AddButton, CustomInput } from "../common/CustomInputs";
 import { caregiverType } from "@/lib/interface-types";
 import CaregiverCard from "./CaregiverCard";
 import { ContainerLoader } from "../LoadingSpinner";
 import GiverForm from "../user-management/GiverForm";
-import { Button } from "../ui/button";
 
 interface Props {
   open: boolean;

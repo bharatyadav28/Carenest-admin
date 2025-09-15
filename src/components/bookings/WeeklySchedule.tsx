@@ -15,8 +15,6 @@ import { weekNumMapping } from "@/lib/resuable-data";
 import { AddButton, DeleteButton, UpdateButton } from "../common/CustomInputs";
 import { EmptyTable } from "../common/EmptyTable";
 import ScheduleForm from "./ScheduleForm";
-import { Button } from "../ui/button";
-import { PlusIcon } from "lucide-react";
 import { useDeleteWeeklySchedule } from "@/store/data/booking/hooks";
 
 interface Props {
