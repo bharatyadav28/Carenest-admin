@@ -192,6 +192,23 @@ function BookingDetails() {
           <div>{booking?.user?.mobile}</div>
         </div>
 
+        <div className="input-container mb-[0.4rem]">
+          <label> Careseeker Zip code </label>
+          <div>{booking?.careseekerZipCode}</div>
+        </div>
+
+        <div className="input-container mb-[0.4rem]">
+          <label>Required by </label>
+          <div>{booking?.requiredBy}</div>
+        </div>
+
+        {booking?.cancelledAt && (
+          <div className="input-container mb-[0.4rem]">
+            <label>Cancelled At </label>
+            <div>{formatDate(booking?.cancelledAt)}</div>
+          </div>
+        )}
+
         {!isFetching && booking && (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

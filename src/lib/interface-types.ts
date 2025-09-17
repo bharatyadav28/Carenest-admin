@@ -74,4 +74,6 @@ export interface bookingType {
   cancelledAt: string;
   caregivers: caregiverType[];
   weeklySchedule: weeklyScheduleType[];
+  requiredBy: string;
+  careseekerZipCode: string;
 }

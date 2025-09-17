@@ -42,9 +42,10 @@ export const fetchGivers = async (search: string) => {
 
 type createCaregiverPayloadType = z.infer<typeof createGiverSchema>;
 export const createCaregiver = async (payload: createCaregiverPayloadType) => {
-  const { data } = await axiosInstance.post("/api/v1/admin/giver", {
+  const { data } = await axiosInstance.post("/api/v1/user/manage-by-admin", {
     ...payload,
     zipcode: Number(payload.zipcode),
+    role: "giver",
   });
   return data;
 };
