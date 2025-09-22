@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 
 import { useBookings, useCancelBooking } from "@/store/data/booking/hooks";
 import { bookingType } from "@/lib/interface-types";
@@ -43,6 +43,15 @@ function Bookings() {
   const [selectedBooking, setSelectedBooking] = useState<bookingType | null>(
     null
   );
+  const location = useLocation();
+
+  const statusFromState = location.state?.status as string | undefined;
+
+  useEffect(() => {
+    if (statusFromState) {
+      setStatus(statusFromState);
+    }
+  }, [statusFromState]);
 
   const filters = useMemo(
     () => ({

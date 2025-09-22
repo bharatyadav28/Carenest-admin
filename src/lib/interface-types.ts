@@ -77,3 +77,13 @@ export interface bookingType {
   requiredBy: string;
   careseekerZipCode: string;
 }
+
+export interface dashboardDataType {
+  totalSeekers: number;
+  totalGivers: number;
+  totalBookings: number;
+  completedBookings: number;
+  pendingBookings: number;
+  acceptedBookings: number;
+  cancelledBookings: number;
+}
