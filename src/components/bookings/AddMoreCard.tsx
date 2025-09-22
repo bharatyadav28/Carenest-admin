@@ -7,7 +7,7 @@ function AddMoreCard({ handleOpenCaregiverMenu }: Props) {
   return (
     <div
       onClick={handleOpenCaregiverMenu}
-      className="relative group p-6 rounded-xl border-2 md:w-[15rem] flex flex-col items-center justify-center gap-4
+      className="relative group p-6 rounded-xl border-2 md:w-[15rem] w-full flex flex-col items-center justify-center gap-4
                              border-slate-600/80 bg-gradient-to-br from-slate-800/40 to-slate-700/20
                              hover:border-emerald-400/70 hover:from-slate-800/60 hover:to-slate-700/40
                              hover:shadow-lg hover:shadow-emerald-500/10 hover:scale-105 transition-all duration-300 cursor-pointer"

@@ -291,7 +291,7 @@ function BookingDetails() {
 
         <div className="input-container my-2">
           <label>Action</label>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <CustomButton
               onClick={() => {
                 setAction("Complete");

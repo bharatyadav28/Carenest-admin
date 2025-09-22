@@ -62,9 +62,9 @@ function GiverForm({ open, handleOpen }: Props) {
     <CustomDrawer
       open={open}
       handleOpen={handleOpen}
-      className="max-w-lg !mx-auto"
+      className="max-w-lg !mx-auto "
     >
-      <div className="p-6">
+      <div className="p-6 overflow-y-auto">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
