@@ -15,10 +15,12 @@ import { Input } from "../ui/input";
 import { CustomButton } from "../common/CustomInputs";
 import CustomDrawer from "../common/CustomDrawer";
 import { LoadingSpinner } from "../LoadingSpinner";
+
 import {
-  useCareSeekerById,
-  useUpdateCareSeeker,
-} from "@/store/data/care-seeker/hook";
+  useCareGiverById,
+  useUpdateCareGiver,
+} from "@/store/data/care-giver/hook";
+
 
 export const formSchema = z.object({
   name: z.string().min(3).max(255),
@@ -45,14 +47,13 @@ interface Props {
   role: "giver" | "seeker"; 
 }
 
-function EditForm({ open, handleOpen, userId, role }: Props) {
-  const { data: seekerData, isFetching: isFetchingSeeker } = useCareSeekerById(userId);
+function EditFormgiver({ open, handleOpen, userId, role }: Props) {
+  const { data: giverData, isFetching: isFetchingGiver } = useCareGiverById(userId);
   
-  const updateSeeker = useUpdateCareSeeker();
-
-  const userData = seekerData;
-  const isFetching =  isFetchingSeeker;
-  const updateUser =updateSeeker;
+  const updateGiver = useUpdateCareGiver();
+  const userData = giverData;
+  const isFetching =  isFetchingGiver;
+  const updateUser =updateGiver;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialFormValues,
@@ -139,4 +140,4 @@ function EditForm({ open, handleOpen, userId, role }: Props) {
   );
 }
 
-export default EditForm;
+export default EditFormgiver;

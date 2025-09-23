@@ -26,7 +26,7 @@ import { AddButton } from "../../components/common/CustomInputs";
 
 // Options for hasDoneBooking filter
 const bookingFilterMenu = [
-  { key: "All", value: "All User" },
+  { key: "All", value: "AllUser" },
   { key: "Done Booking", value: "true" },
   { key: "No Booking", value: "false" },
 ];

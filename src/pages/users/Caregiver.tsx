@@ -28,7 +28,7 @@ import { DeleteDialog } from "@/components/common/CustomDialog";
 import { showError } from "@/lib/resuable-fns";
 import GiverForm from "../../components/user-management/GiverForm";
 import { AddButton } from "../../components/common/CustomInputs";
-import EditForm from "@/components/user-management/Editform";
+import EditFormgiver from "@/components/user-management/Editformgiver";
 
 function Caregiver() {
   const [search, setSearch] = useState("");
@@ -193,7 +193,7 @@ function Caregiver() {
       )}
 
       {selectedUserId && (
-        <EditForm
+        <EditFormgiver
           open={openEditForm}
           handleOpen={handleCloseEditForm}
           userId={selectedUserId}

@@ -53,18 +53,18 @@ export const useUpdateCareSeeker = () => {
         ...updatedUser,
         zipcode: updatedUser.zipcode ? Number(updatedUser.zipcode) : undefined,
       };
+    
       return updateCareSeeker(userId, payload);
     },
     onSuccess: (data, variables) => {
       toast.success(data?.message);
-
+  console.log("success hi hi hi")
       // Invalidate BOTH query keys
       queryClient.invalidateQueries({ queryKey: ["careSeekers"] });
-      queryClient.invalidateQueries({ queryKey: ["seekers"] });
+      
       
       // Invalidate single care seeker queries
       queryClient.invalidateQueries({ queryKey: ["careSeekers", variables.userId] });
-            queryClient.invalidateQueries({ queryKey: ["seekers", variables.userId] });
     },
     onError: (error) => showError(error),
   });
@@ -75,12 +75,13 @@ export const useDeleteCareSeeker = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (userId: string) => deleteCareSeeker(userId),
+    mutationFn: (userId: string) => deleteCareSeeker(userId)
+    ,
+    
     onSuccess: (data) => {
       toast.success(data?.message);
       // Invalidate BOTH query keys
       queryClient.invalidateQueries({ queryKey: ["careSeekers"] });
-      queryClient.invalidateQueries({ queryKey: ["seekers"] });
     },
     onError: (error) => showError(error),
   });
