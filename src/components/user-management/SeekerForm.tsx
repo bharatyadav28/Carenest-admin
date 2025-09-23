@@ -13,7 +13,7 @@ import {
 import { Input } from "../ui/input";
 import { CustomButton } from "../common/CustomInputs";
 import CustomDrawer from "../common/CustomDrawer";
-import { useCreateGiver } from "@/store/data/users/hooks";
+import { useCreateSeeker } from "@/store/data/users/hooks";
 import { LoadingSpinner } from "../LoadingSpinner";
 
 export const formSchema = z.object({
@@ -39,16 +39,16 @@ interface Props {
   handleOpen: () => void;
 }
 
-function GiverForm({ open, handleOpen }: Props) {
+function SeekerForm({ open, handleOpen }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialFormValues,
   });
 
-  const createGiver = useCreateGiver();
+  const createSeeker = useCreateSeeker();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createGiver.mutate(values, {
+    createSeeker.mutate(values, {
       onSuccess: () => {
         handleOpen();
         form.reset({
@@ -62,9 +62,9 @@ function GiverForm({ open, handleOpen }: Props) {
     <CustomDrawer
       open={open}
       handleOpen={handleOpen}
-      className="max-w-lg !mx-auto "
+      className="max-w-lg !mx-auto"
     >
-      <div className="p-6 overflow-y-auto">
+      <div className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -74,7 +74,7 @@ function GiverForm({ open, handleOpen }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter caregiver name" {...field} />
+                    <Input placeholder="Enter Careseeker name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -90,7 +90,7 @@ function GiverForm({ open, handleOpen }: Props) {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="Enter caregiver email"
+                      placeholder="Enter careseeker email"
                       {...field}
                     />
                   </FormControl>
@@ -108,7 +108,7 @@ function GiverForm({ open, handleOpen }: Props) {
                   <FormControl>
                     <Input
                       type="tel"
-                      placeholder="Enter caregiver mobile"
+                      placeholder="Enter careseeker mobile"
                       {...field}
                     />
                   </FormControl>
@@ -126,7 +126,7 @@ function GiverForm({ open, handleOpen }: Props) {
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter caregiver address"
+                      placeholder="Enter careseeker address"
                       {...field}
                     />
                   </FormControl>
@@ -144,7 +144,7 @@ function GiverForm({ open, handleOpen }: Props) {
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter caregiver zip code"
+                      placeholder="Enter careseeker zip code"
                       {...field}
                     />
                   </FormControl>
@@ -162,7 +162,7 @@ function GiverForm({ open, handleOpen }: Props) {
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter caregiver gender"
+                      placeholder="Enter careseeker gender"
                       {...field}
                     />
                   </FormControl>
@@ -174,9 +174,9 @@ function GiverForm({ open, handleOpen }: Props) {
             <CustomButton
               type="submit"
               className="green-button w-full"
-              disabled={createGiver.isPending}
+              disabled={createSeeker.isPending}
             >
-              {createGiver.isPending ? <LoadingSpinner /> : "Add Caregiver"}
+              {createSeeker.isPending ? <LoadingSpinner /> : "Add Care Seeker"}
             </CustomButton>
           </form>
         </Form>
@@ -185,4 +185,4 @@ function GiverForm({ open, handleOpen }: Props) {
   );
 }
 
-export default GiverForm;
+export default SeekerForm;

@@ -9,7 +9,11 @@ import NotFound from "./components/Notfound";
 import Signin from "./pages/Signin";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/bookings/Bookings";
+import Careseeker from "./pages/users/Careseeker";
+import Caregiver from "./pages/users/Caregiver";
 import BookingDetails from "./pages/bookings/BookingDetails";
+import CareseekerDetail from "./components/user-management/CareseekerDetail";
+import CaregiverDetail from "./components/user-management/CaregiverDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,6 +39,31 @@ function App() {
           path: "/profile",
           Component: Profile,
         },
+        {
+        path: "/care-seeker",
+          children: [
+            {
+              index: true,
+              Component: Careseeker,
+            },
+            {
+              path: ":id",
+              Component: CareseekerDetail,
+            },]
+          },
+
+                {
+        path: "/care-giver",
+          children: [
+            {
+              index: true,
+              Component: Caregiver,
+            },
+            {
+              path: ":id",
+              Component: CaregiverDetail,
+            },]
+          },
 
         {
           path: "/bookings",

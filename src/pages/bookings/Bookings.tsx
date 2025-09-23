@@ -215,7 +215,7 @@ function Bookings() {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <div className="flex">
+                    <div className="flex gap-2">
                       <UpdateButton
                         onClick={() => {
                           navigate(`/bookings/${booking.bookingId}`);
