@@ -49,3 +49,21 @@ export const createCaregiver = async (payload: createCaregiverPayloadType) => {
   });
   return data;
 };
+
+// ------------------ CARESEEKER ------------------
+export const fetchSeekers = async (search: string) => {
+  const { data } = await axiosInstance.get("/api/v1/user", {
+    params: { search },
+  });
+  return data;
+};
+
+type createCareseekerPayloadType = z.infer<typeof createGiverSchema>; // ✅ can reuse same schema
+export const createCareseeker = async (payload: createCareseekerPayloadType) => {
+  const { data } = await axiosInstance.post("/api/v1/user/manage-by-admin", {
+    ...payload,
+    zipcode: Number(payload.zipcode),
+    role: "user", 
+  });
+  return data;
+};

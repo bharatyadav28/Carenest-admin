@@ -198,7 +198,7 @@ export const DeleteButton = ({
     <Button
       variant="destructive"
       size="icon"
-      className={`ml-2 ${className} hover:cursor-pointer`}
+      className={` ${className} hover:cursor-pointer`}
       onClick={onClick}
       disabled={isDeleting}
       {...props}

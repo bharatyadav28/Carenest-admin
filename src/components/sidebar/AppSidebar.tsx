@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { MdDashboard as DashboardIcon } from "react-icons/md";
 import { FaCalendarAlt as BookingIcon } from "react-icons/fa";
+import { FaUser as UserIcon } from "react-icons/fa";
+
 
 import {
   Sidebar,
@@ -33,6 +35,23 @@ function AppSidebar() {
       name: "Dashboard",
       Icon: DashboardIcon,
       path: "/",
+    },
+    {
+      name: "Users Mangement",
+      Icon: UserIcon,
+      hasSubMenu: true,
+      subMenuItems: [
+        {
+          name: "Care Seekers",
+          Icon: UserIcon,
+          path: "/care-seeker",
+        },
+        {
+          name: "Care Givers",
+          Icon: UserIcon,
+          path: "/care-giver",
+        },
+      ],
     },
     {
       name: "Bookings",
