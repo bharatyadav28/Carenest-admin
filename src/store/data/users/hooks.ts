@@ -24,7 +24,7 @@ export const useSignin = () => {
       toast.success(data?.message);
       const { accessToken, refreshToken } = data?.data;
 
-      Cookies.set("accessToken", accessToken, getCookieConfig(accessToken));
+      Cookies.set("authToken", accessToken, getCookieConfig(accessToken));
       Cookies.set("refreshToken", refreshToken, getCookieConfig(refreshToken));
 
       navigate("/");

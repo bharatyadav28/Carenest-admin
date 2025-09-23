@@ -81,3 +81,20 @@ export const convertToDate = (
 export const convertToPascalCase = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
+
+export function formatTo12Hour(timeInput: string) {
+  const date = new Date(timeInput);
+
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date or ISO string");
+  }
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12 || 12; // convert 0 → 12, 13 → 1
+  const formattedMinutes = minutes.toString().padStart(2, "0");
+
+  return `${hours}:${formattedMinutes} ${ampm}`;
+}

@@ -36,23 +36,22 @@ function Caregiver() {
   const [currentPage, setCurrentPage] = useState(1);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  
-const [openEditForm, setOpenEditForm] = useState(false);
 
-const handleOpenEditForm = (userId: string) => {
-  setSelectedUserId(userId);
-  setOpenEditForm(true);
-};
+  const [openEditForm, setOpenEditForm] = useState(false);
 
-const handleCloseEditForm = () => {
-  setOpenEditForm(false);
-  setSelectedUserId(null);
-};
+  const handleOpenEditForm = (userId: string) => {
+    setSelectedUserId(userId);
+    setOpenEditForm(true);
+  };
+
+  const handleCloseEditForm = () => {
+    setOpenEditForm(false);
+    setSelectedUserId(null);
+  };
   const filters = useMemo(
     () => ({
       page: currentPage,
       search: debouncedSearch,
-   
     }),
     [currentPage, debouncedSearch]
   );
@@ -94,17 +93,16 @@ const handleCloseEditForm = () => {
 
   const users = data?.data?.users || [];
   const totalPages = data?.data?.totalPages || 1;
-  console.log(totalPages)
   const noUsers = users.length === 0;
-    const [openAddGiver, setOpenAddGiver] = useState(false);
-    const handleOpenAddGiver = () => {
+  const [openAddGiver, setOpenAddGiver] = useState(false);
+  const handleOpenAddGiver = () => {
     setOpenAddGiver((prev) => !prev);
   };
   return (
     <div className=" table-main-container">
       {/* Search & Filter */}
       <div className="flex gap-2 flex-wrap items-center mb-4">
-                         <GiverForm open={openAddGiver} handleOpen={handleOpenAddGiver} />
+        <GiverForm open={openAddGiver} handleOpen={handleOpenAddGiver} />
 
         <div className="w-[20rem] max-w-full flex items-center border border-gray-400 rounded-md ps-2">
           <SearchIcon size={18} />
@@ -115,21 +113,14 @@ const handleCloseEditForm = () => {
             placeholder="Search by email or name"
           />
         </div>
-<button
-  onClick={handleOpenAddGiver}
-  className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-md transition"
->
-      <AddButton
-   
-    className="text-white font-bold !border-0 !size-7"
-  />
-  <span className="text-md font-medium">Create New Caregiver</span>
-
-</button>
-
-          </div>
-  
-    
+        <button
+          onClick={handleOpenAddGiver}
+          className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-md transition"
+        >
+          <AddButton className="text-white font-bold !border-0 !size-7" />
+          <span className="text-md font-medium">Create New Caregiver</span>
+        </button>
+      </div>
 
       {/* Table */}
       <Table className="custom-table">
@@ -146,7 +137,9 @@ const handleCloseEditForm = () => {
 
         <TableBody>
           {isFetching && <TableLoader colSpan={5} />}
-          {!isFetching && noUsers && <EmptyTable colSpan={5} text="No givers found" />}
+          {!isFetching && noUsers && (
+            <EmptyTable colSpan={5} text="No givers found" />
+          )}
           {!isFetching &&
             !noUsers &&
             users.map((user: any) => (
@@ -157,8 +150,10 @@ const handleCloseEditForm = () => {
                 <TableCell>{user.gender || "N/A"}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <ViewButton onClick={() => navigate(`/care-giver/${user.id}`)} />
-                <UpdateButton onClick={() => handleOpenEditForm(user.id)} />
+                    <ViewButton
+                      onClick={() => navigate(`/care-giver/${user.id}`)}
+                    />
+                    <UpdateButton onClick={() => handleOpenEditForm(user.id)} />
 
                     <DeleteButton
                       onClick={() => {
@@ -198,14 +193,13 @@ const handleCloseEditForm = () => {
       )}
 
       {selectedUserId && (
-<EditForm
-  open={openEditForm}
-  handleOpen={handleCloseEditForm}
-  userId={selectedUserId}
-  role="giver"
-/>
-)}
-
+        <EditForm
+          open={openEditForm}
+          handleOpen={handleCloseEditForm}
+          userId={selectedUserId}
+          role="giver"
+        />
+      )}
     </div>
   );
 }

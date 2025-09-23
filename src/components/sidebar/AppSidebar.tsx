@@ -4,7 +4,6 @@ import { MdDashboard as DashboardIcon } from "react-icons/md";
 import { FaCalendarAlt as BookingIcon } from "react-icons/fa";
 import { FaUser as UserIcon } from "react-icons/fa";
 
-
 import {
   Sidebar,
   SidebarContent,
@@ -57,6 +56,12 @@ function AppSidebar() {
       name: "Bookings",
       Icon: BookingIcon,
       path: "/bookings",
+    },
+
+    {
+      name: "Inbox",
+      Icon: BookingIcon,
+      path: "/inbox",
     },
   ];
 

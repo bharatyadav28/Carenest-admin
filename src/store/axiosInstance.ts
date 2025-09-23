@@ -57,12 +57,12 @@ const refreshAccessToken = async (): Promise<string> => {
     const { accessToken } = response.data?.data;
 
     // Update cookies with new tokens
-    Cookies.set("accessToken", accessToken, getCookieConfig(accessToken));
+    Cookies.set("authToken", accessToken, getCookieConfig(accessToken));
 
     return accessToken;
   } catch (error) {
     // Remove invalid tokens
-    Cookies.remove("accessToken");
+    Cookies.remove("authToken");
     Cookies.remove("refreshToken");
     toast.error("Please login again");
     window.location.href = "/signin"; // Adjust path as needed
@@ -72,7 +72,8 @@ const refreshAccessToken = async (): Promise<string> => {
 
 // Request interceptor to add access token
 axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token: string | undefined = Cookies.get("accessToken");
+  const token: string | undefined = Cookies.get("authToken");
+  console.log("Token in axiosInstance:", token);
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -113,15 +114,15 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const newAccessToken: string = await refreshAccessToken();
+        const newAuthToken: string = await refreshAccessToken();
         isRefreshing = false;
 
         // Process queued requests
-        onTokenRefreshed(newAccessToken);
+        onTokenRefreshed(newAuthToken);
 
         // Retry original request with new token
         if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${newAuthToken}`;
         }
         return axiosInstance(originalRequest);
       } catch (refreshError) {

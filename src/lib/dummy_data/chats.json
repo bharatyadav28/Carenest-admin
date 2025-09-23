@@ -1,0 +1,182 @@
+{
+  "chatList": [
+    {
+      "id": 1,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 1
+    },
+    {
+      "id": 2,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 5
+    },
+    {
+      "id": 3,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 4,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 5,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 6,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 7,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 8,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 9,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 10,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 11,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 12,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 13,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    },
+    {
+      "id": 14,
+      "profilePic": "",
+      "name": "William James",
+      "message": {
+        "content": "Hey william james, welcome...",
+        "time": "09:00 AM"
+      },
+      "unread": 0
+    }
+  ],
+
+  "messages": [
+    {
+      "id": 1,
+      "sender": "user1",
+      "text": "Hi! I’m looking for a caregiver for my mother, preferably someone with experience in elderly care. Are you available for part-time support starting next week?",
+      "time": "09:00 AM",
+      "profilePic": ""
+    },
+    {
+      "id": 2,
+      "sender": "user2",
+      "text": "Hello! Thanks for reaching out. Yes, I have experience with elderly care and I’m currently available for part-time work. Could you share more about the support your mother needs and the preferred timings?",
+      "time": "09:01 AM",
+      "profilePic": ""
+    },
+    {
+      "id": 3,
+      "sender": "user1",
+      "text": "She needs help with daily routines like meals, light cleaning, and companionship. We’re looking for someone from 9 AM to 1 PM, Monday to Friday.",
+      "time": "09:02 AM",
+      "profilePic": ""
+    },
+    {
+      "id": 4,
+      "sender": "user2",
+      "text": "That works perfectly with my schedule. I’d be happy to assist. I’m also certified in basic first aid and have worked with seniors for 3+ years.",
+      "time": "09:03 AM",
+      "profilePic": ""
+    },
+    {
+      "id": 5,
+      "sender": "user1",
+      "text": "That’s great to hear. Can we set up a quick call to discuss further?",
+      "time": "09:04 AM",
+      "profilePic": ""
+    }
+  ]
+}

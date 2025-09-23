@@ -14,6 +14,7 @@ import Caregiver from "./pages/users/Caregiver";
 import BookingDetails from "./pages/bookings/BookingDetails";
 import CareseekerDetail from "./components/user-management/CareseekerDetail";
 import CaregiverDetail from "./components/user-management/CaregiverDetail";
+import Inbox from "./pages/Inbox";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,7 +41,7 @@ function App() {
           Component: Profile,
         },
         {
-        path: "/care-seeker",
+          path: "/care-seeker",
           children: [
             {
               index: true,
@@ -49,11 +50,12 @@ function App() {
             {
               path: ":id",
               Component: CareseekerDetail,
-            },]
-          },
+            },
+          ],
+        },
 
-                {
-        path: "/care-giver",
+        {
+          path: "/care-giver",
           children: [
             {
               index: true,
@@ -62,8 +64,9 @@ function App() {
             {
               path: ":id",
               Component: CaregiverDetail,
-            },]
-          },
+            },
+          ],
+        },
 
         {
           path: "/bookings",
@@ -77,6 +80,11 @@ function App() {
               Component: BookingDetails,
             },
           ],
+        },
+
+        {
+          path: "/inbox",
+          Component: Inbox,
         },
       ],
     },

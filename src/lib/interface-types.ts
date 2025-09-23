@@ -87,3 +87,32 @@ export interface dashboardDataType {
   acceptedBookings: number;
   cancelledBookings: number;
 }
+
+export interface chatType {
+  id: string;
+  toUser: {
+    id: string;
+    name: string;
+    avatar: string | null;
+  };
+  lastMessage: {
+    message: string;
+    createdAt: string;
+  };
+  unReadCount: number;
+}
+
+export interface chatMessageType {
+  id: string;
+  conversationId: string;
+  isOtherUserMessage: boolean;
+  message: string;
+  createdAt: string;
+  hasRead: boolean;
+}
+
+export interface otherUserDetailsType {
+  id: string;
+  name: string;
+  avatar: string;
+}
