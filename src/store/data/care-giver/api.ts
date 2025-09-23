@@ -58,6 +58,6 @@ export const updateCareGiver = async (
 
 // Delete caregiver
 export const deleteCareGiver = async (userId: string) => {
-  const { data } = await axiosInstance.delete(`/api/v1/giver/manage-by-admin/${userId}`);
+  const { data } = await axiosInstance.delete(`/api/v1/user/manage-by-admin/${userId}`);
   return data;
 };

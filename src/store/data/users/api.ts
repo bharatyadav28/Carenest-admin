@@ -58,7 +58,7 @@ export const fetchSeekers = async (search: string) => {
   return data;
 };
 
-type createCareseekerPayloadType = z.infer<typeof createGiverSchema>; // ✅ can reuse same schema
+type createCareseekerPayloadType = z.infer<typeof createGiverSchema>; 
 export const createCareseeker = async (payload: createCareseekerPayloadType) => {
   const { data } = await axiosInstance.post("/api/v1/user/manage-by-admin", {
     ...payload,

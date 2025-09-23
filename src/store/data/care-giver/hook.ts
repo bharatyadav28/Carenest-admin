@@ -4,7 +4,6 @@ import {
   fetchCareGivers,
   fetchCareGiverById,
   fetchCareGiverBookings,
- 
   updateCareGiver,
   deleteCareGiver,
   CareGiverFiltersType,
@@ -54,6 +53,7 @@ export const useUpdateCareGiver = () => {
         ...updatedUser,
         zipcode: updatedUser.zipcode ? Number(updatedUser.zipcode) : undefined,
       };
+     
       return updateCareGiver(userId, payload);
     },
     onSuccess: (data, variables) => {
