@@ -57,7 +57,7 @@ const Chat = ({ messages, otherUserDetails }: props) => {
               <div className="text-[#667085] text-sm flex flex-col">
                 <div
                   className={`rounded-2xl px-6 py-3 max-w-[21rem] ${
-                    isUser1 ? "bg-[#F8F9FA]" : "bg-[#233D4D33] text-black"
+                    isUser1 ? "bg-[#F8F9FA]" : "bg-[#233D4D33] text-white"
                   }`}
                 >
                   {message.message}

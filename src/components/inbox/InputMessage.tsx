@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LuSend as SendIcon } from "react-icons/lu";
-import { IoIosAttach as AttachmentIcon } from "react-icons/io";
+// import { IoIosAttach as AttachmentIcon } from "react-icons/io";
 
 import { Input } from "@/components/ui/input";
 import { useSocket } from "@/hooks/use-socket";
@@ -61,9 +61,9 @@ function InputMessage({ userId, addMessage }: InputMessageProps) {
   return (
     <div className="flex items-center rounded-lg px-4 py-1 bg-[#F7F7F3]">
       <div className="flex grow-1 gap-4 items-center">
-        <button>
+        {/* <button>
           <AttachmentIcon size={21} className="text-[var(--cool-gray)]" />
-        </button>
+        </button> */}
 
         <Input
           value={message}

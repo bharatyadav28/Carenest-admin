@@ -105,11 +105,11 @@ console.log(chatList)
                     ? formatTo12Hour(chat.lastMessage.createdAt)
                     : ""}
                 </div>
-                {chat?.unReadCount > 0 && (
+                {/* {chat?.unReadCount > 0 && (
                   <div className="bg-primary text-[#fff] px-2 rounded-full text-sm">
                     {chat.unReadCount}
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           ))}
