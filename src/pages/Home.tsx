@@ -16,14 +16,14 @@ function Home() {
       name: "Total careseekers",
       count: stats?.totalSeekers || 0,
       color: "#ADD8E6",
-      href: "/users",
+      href: "/care-seeker",
       state: {},
     },
     {
       name: "Total caregivers",
       count: stats?.totalGivers || 0,
       color: "#90EE90",
-      href: "/users",
+      href: "/care-giver",
       state: {},
     },
 
