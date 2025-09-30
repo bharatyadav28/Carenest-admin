@@ -7,8 +7,8 @@ function NoItems({ className }: Props) {
 
   return (
     <div className={classes}>
-      <img src={"/no-items.png"} alt="Logo" width={120} height={100} />
-      <div className="font-medium">You have not received any messages.</div>
+      {/* <img src={"/no-items.png"} alt="Logo" width={120} height={100} /> */}
+      <div className="font-medium mx-auto">You have not received any messages.</div>
     </div>
   );
 }
