@@ -58,11 +58,11 @@ function AppSidebar() {
       path: "/bookings",
     },
 
-    // {
-    //   name: "Inbox",
-    //   Icon: BookingIcon,
-    //   path: "/inbox",
-    // },
+    {
+      name: "Inbox",
+      Icon: BookingIcon,
+      path: "/inbox",
+    },
   ];
 
   // Function to check if a sub-menu item is to open by default
