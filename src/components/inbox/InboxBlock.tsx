@@ -17,7 +17,6 @@ function InboxBlock() {
       <div className="col-start-1 md:col-end-6 col-end-13 card  mr-1 bg-[#000]">
         <MessageList handleOpenMessages={handleOpenMessages} />
       </div>
-
       <div className="col-start-6 col-end-13 card md:flex flex-grow overflow-y-auto hidden bg-[#000] ml-1">
         {myMessages}
       </div>
