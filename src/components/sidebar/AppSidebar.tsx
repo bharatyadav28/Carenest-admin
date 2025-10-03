@@ -78,7 +78,7 @@ function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <div className="text-lg text-center font-bold h-[3rem] flex items-center justify-center">
-          Carenest
+        CareWorks
         </div>
       </SidebarHeader>
 
