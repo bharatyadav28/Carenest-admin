@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 import { cdnURL } from "@/lib/resuable-data";
 import { Input } from "@/components/ui/input";
 import NoItems from "@/components/common/NoItems";
@@ -9,6 +11,7 @@ import ProfilePic from "@/assets/profilepic1.png";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useGetAllChats } from "@/store/data/inbox/hooks";
 import { formatTo12Hour } from "@/lib/resuable-fns";
+import { useSocket } from "@/hooks/use-socket";
 
 interface Props {
   handleOpenMessages: () => void;
@@ -17,21 +20,69 @@ interface Props {
 function MessageList({ handleOpenMessages }: Props) {
   const [search, setSearch] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const isMobile = useIsMobile();
-  const chats = useGetAllChats();
+  const { onNewMessage } = useSocket(Cookies.get("authToken"));
   const navigate = useNavigate();
 
+  const chats = useGetAllChats();
   const chatList = chats?.data?.data?.conversations || [];
-console.log(chatList)
+  
   const noChats = chatList.length === 0;
 
- 
-  useEffect(() => {
-    if (!selectedUserId && chatList.length > 0) {
-      setSelectedUserId(chatList[0].toUser.id);
-    }
-  }, [chatList, selectedUserId]);
+  // Sort chats by latest message
+  const sortedChats = [...chatList].sort((a, b) => {
+    const dateA = new Date(a.lastMessage?.createdAt || 0);
+    const dateB = new Date(b.lastMessage?.createdAt || 0);
+    return dateB.getTime() - dateA.getTime();
+  });
 
+  // Handle real-time updates
+  useEffect(() => {
+    const handleNewMessage = async (message: any) => {
+      // Update chat list in cache
+      queryClient.setQueryData(["chats"], (oldData: any) => {
+        if (!oldData?.data) return oldData;
+
+        const updatedConversations = oldData.data.conversations.map((chat: any) => {
+          if (chat.toUser.id === message.fromUserId || chat.toUser.id === message.toUserId) {
+            return {
+              ...chat,
+              lastMessage: {
+                message: message.message,
+                createdAt: message.createdAt
+              },
+              unReadCount: chat.unReadCount + 1
+            };
+          }
+          return chat;
+        });
+
+        // Sort by latest message
+        updatedConversations.sort((a: any, b: any) => {
+          const dateA = new Date(a.lastMessage?.createdAt || 0);
+          const dateB = new Date(b.lastMessage?.createdAt || 0);
+          return dateB.getTime() - dateA.getTime();
+        });
+
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            conversations: updatedConversations
+          }
+        };
+      });
+    };
+
+    onNewMessage(handleNewMessage);
+  }, [onNewMessage, queryClient]);
+
+  useEffect(() => {
+    if (!selectedUserId && sortedChats.length > 0) {
+      setSelectedUserId(sortedChats[0].toUser.id);
+    }
+  }, [sortedChats, selectedUserId]);
 
   useEffect(() => {
     if (selectedUserId) {
@@ -44,17 +95,10 @@ console.log(chatList)
     setSelectedUserId(userId);
   };
 
-  // Filter existing chats by search
-  const filteredChats = chatList.filter((chat) =>
+  // Filter chats by search
+  const filteredChats = sortedChats.filter((chat) =>
     chat.toUser.name.toLowerCase().includes(search.toLowerCase())
   );
-
-  // Detect if search term is a new user
-  const isNewUser =
-    search.trim() &&
-    !chatList.some((chat) =>
-      chat.toUser.name.toLowerCase() === search.toLowerCase()
-    );
 
   return (
     <div className="w-full overflow-y-auto flex flex-col h-[calc(100vh-3.2rem)] p-1 border-rounded-md">
@@ -68,15 +112,15 @@ console.log(chatList)
         <SearchIcon size={18} className="text-[var(--cool-gray)]" />
       </div>
 
-      {noChats && !isNewUser && <NoItems className="mt-8" />}
+      {noChats && <NoItems className="mt-8" />}
 
       {!noChats && (
         <div className="flex flex-col h-full flex-grow overflow-y-auto hide-scrollbar">
           {filteredChats.map((chat) => (
             <div
-              className={`flex justify-between py-2 hover:cursor-pointer hover:bg-gray-100/50 px-2 rounded-md transition-all ${
+              className={`flex justify-between py-2 hover:cursor-pointer hover:bg-gray-100/50 px-2 rounded-md  ${
                 selectedUserId === chat.toUser.id ? "bg-gray-200/60" : ""
-              }`}
+              } `}
               onClick={() => handleClick(chat.toUser.id)}
               key={chat.id}
             >
@@ -90,6 +134,7 @@ console.log(chatList)
                     }
                     alt={chat?.toUser?.name}
                   />
+           
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="font-semibold">{chat.toUser.name}</div>
@@ -105,28 +150,9 @@ console.log(chatList)
                     ? formatTo12Hour(chat.lastMessage.createdAt)
                     : ""}
                 </div>
-                {/* {chat?.unReadCount > 0 && (
-                  <div className="bg-primary text-[#fff] px-2 rounded-full text-sm">
-                    {chat.unReadCount}
-                  </div>
-                )} */}
               </div>
             </div>
           ))}
-
-{/*         
-          {isNewUser && (
-            <div
-              className="flex justify-between py-2 px-2 rounded-md cursor-pointer hover:bg-gray-100/50 bg-gray-50/50 mt-2"
-              onClick={() => handleClick("JTHGpmRI1INf_ZoOLGtcu")}
-            >
-              <div className="flex gap-4 items-center">
-                <DP url={ProfilePic} alt={search} className="w-12 h-12" />
-                <div className="font-semibold text-sm">{search} (New User)</div>
-              </div>
-              <div className="text-sm text-[var(--cool-gray)]">Start Chat</div>
-            </div>
-          )} */}
         </div>
       )}
     </div>

@@ -27,6 +27,7 @@ export interface bookingFiltersType {
   startDate?: string;
   endDate?: string;
   status?: string;
+
 }
 
 export interface serviceType {
@@ -65,7 +66,8 @@ export interface bookingType {
   bookingId: string;
   bookedOn: string;
   startDate: string;
-  endDate?: string;
+  meetingDate: string;
+  endDate?: string | null;
   duration: string;
   status: string;
   services: serviceType[];

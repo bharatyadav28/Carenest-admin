@@ -53,7 +53,8 @@ export const completeBooking = async (bookingId: string) => {
 
 export interface updatedDataType {
   startDate: string;
-  endDate: string;
+  endDate: string | null;
+  meetingDate: string;
 }
 export const updateBookingDetails = async (
   bookingId: string,

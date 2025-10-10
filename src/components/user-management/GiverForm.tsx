@@ -16,6 +16,14 @@ import CustomDrawer from "../common/CustomDrawer";
 import { useCreateGiver } from "@/store/data/users/hooks";
 import { LoadingSpinner } from "../LoadingSpinner";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 export const formSchema = z.object({
   name: z.string().min(3).max(255),
   email: z.string().email().max(255),
@@ -51,9 +59,7 @@ function GiverForm({ open, handleOpen }: Props) {
     createGiver.mutate(values, {
       onSuccess: () => {
         handleOpen();
-        form.reset({
-          ...initialFormValues,
-        });
+        form.reset(initialFormValues);
       },
     });
   }
@@ -62,7 +68,7 @@ function GiverForm({ open, handleOpen }: Props) {
     <CustomDrawer
       open={open}
       handleOpen={handleOpen}
-      className="max-w-lg !mx-auto "
+      className="max-w-lg !mx-auto"
     >
       <div className="p-6 overflow-y-auto">
         <Form {...form}>
@@ -153,19 +159,28 @@ function GiverForm({ open, handleOpen }: Props) {
               )}
             />
 
+            {/* ✅ Gender Dropdown */}
             <FormField
               control={form.control}
               name="gender"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Gender</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter caregiver gender"
-                      {...field}
-                    />
-                  </FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

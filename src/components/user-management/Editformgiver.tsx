@@ -21,6 +21,13 @@ import {
   useUpdateCareGiver,
 } from "@/store/data/care-giver/hook";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const formSchema = z.object({
   name: z.string().min(3).max(255),
@@ -44,16 +51,17 @@ interface Props {
   open: boolean;
   handleOpen: () => void;
   userId: string;
-  role: "giver" | "seeker"; 
+  role: "giver" | "seeker";
 }
 
 function EditFormgiver({ open, handleOpen, userId, role }: Props) {
   const { data: giverData, isFetching: isFetchingGiver } = useCareGiverById(userId);
-  
   const updateGiver = useUpdateCareGiver();
+
   const userData = giverData;
-  const isFetching =  isFetchingGiver;
-  const updateUser =updateGiver;
+  const isFetching = isFetchingGiver;
+  const updateUser = updateGiver;
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialFormValues,
@@ -69,7 +77,7 @@ function EditFormgiver({ open, handleOpen, userId, role }: Props) {
         mobile: user.mobile ?? "",
         address: user.address ?? "",
         zipcode: user.zipcode?.toString() ?? "",
-        gender: user.gender ?? "",
+        gender: user.gender?.toLowerCase() ?? "",
       });
     }
   }, [userData, form]);
@@ -95,30 +103,54 @@ function EditFormgiver({ open, handleOpen, userId, role }: Props) {
         ) : (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              {["name", "email", "mobile", "address", "zipcode", "gender"].map(
-                (field) => (
-                  <FormField
-                    key={field}
-                    control={form.control}
-                    name={field as keyof z.infer<typeof formSchema>}
-                    render={({ field: f }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {field.charAt(0).toUpperCase() + field.slice(1)}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={`Enter ${role} ${field}`}
-                            {...f}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )
-              )}
+              {/* Regular input fields */}
+              {["name", "email", "mobile", "address", "zipcode"].map((field) => (
+                <FormField
+                  key={field}
+                  control={form.control}
+                  name={field as keyof z.infer<typeof formSchema>}
+                  render={({ field: f }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {field.charAt(0).toUpperCase() + field.slice(1)}
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder={`Enter ${role} ${field}`} {...f} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
 
+              {/* Gender Dropdown */}
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gender</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || ""}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Submit Button */}
               <CustomButton
                 type="submit"
                 className="green-button w-full"

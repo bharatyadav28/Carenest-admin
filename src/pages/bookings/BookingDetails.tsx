@@ -39,7 +39,8 @@ import WeeklySchedule from "@/components/bookings/WeeklySchedule";
 
 const formSchema = z.object({
   startDate: z.string().min(1, { message: "Start date is required" }),
-  endDate: z.string().min(1, { message: "End date is required" }),
+  endDate: z.string(),
+  meetingDate: z.string().min(1, { message: "Meeting date is required" }),
 });
 
 function BookingDetails() {
@@ -114,6 +115,7 @@ function BookingDetails() {
     defaultValues: {
       startDate: "",
       endDate: "",
+      meetingDate: "",
     },
   });
 
@@ -123,7 +125,8 @@ function BookingDetails() {
       bookingId: id,
       updatedData: {
         startDate: values.startDate,
-        endDate: values.endDate,
+        endDate: values.endDate || null,
+        meetingDate: values.meetingDate, // Assuming meetingDate is same as startDate
       },
     });
   }
@@ -136,6 +139,7 @@ function BookingDetails() {
       reset({
         startDate: booking?.startDate || "",
         endDate: booking?.endDate || "",
+        meetingDate: booking?.meetingDate || "",
       });
     }
   }, [booking, reset]);
@@ -244,6 +248,26 @@ function BookingDetails() {
                         <Input
                           type="date"
                           placeholder="Enter end date"
+                          {...field}
+                          className=" !w-full date-input input"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+                 <FormField
+                control={form.control}
+                name="meetingDate"
+                render={({ field }) => (
+                  <FormItem className="input-container">
+                    <FormLabel>Meeting Date</FormLabel>
+                    <div className="user-input">
+                      <FormControl>
+                        <Input
+                          type="date"
+                          placeholder="Enter meeting date"
                           {...field}
                           className=" !w-full date-input input"
                         />

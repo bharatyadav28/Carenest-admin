@@ -2,6 +2,13 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import {
   Form,
@@ -42,12 +49,12 @@ interface Props {
   open: boolean;
   handleOpen: () => void;
   userId: string;
-  role: "giver" | "seeker"; 
+  role: "giver" | "seeker";
 }
 
 function EditForm({ open, handleOpen, userId, role }: Props) {
   const { data: seekerData, isFetching: isFetchingSeeker } = useCareSeekerById(userId);
-  
+
   const updateSeeker = useUpdateCareSeeker();
 
   const userData = seekerData;
@@ -94,29 +101,54 @@ function EditForm({ open, handleOpen, userId, role }: Props) {
         ) : (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              {["name", "email", "mobile", "address", "zipcode", "gender"].map(
-                (field) => (
-                  <FormField
-                    key={field}
-                    control={form.control}
-                    name={field as keyof z.infer<typeof formSchema>}
-                    render={({ field: f }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {field.charAt(0).toUpperCase() + field.slice(1)}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={`Enter ${role} ${field}`}
-                            {...f}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )
-              )}
+              {["name", "email", "mobile", "address", "zipcode"].map((field) => (
+                <FormField
+                  key={field}
+                  control={form.control}
+                  name={field as keyof z.infer<typeof formSchema>}
+                  render={({ field: f }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {field.charAt(0).toUpperCase() + field.slice(1)}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={`Enter ${role} ${field}`}
+                          {...f}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gender</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <CustomButton
                 type="submit"

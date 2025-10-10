@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, ArrowUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -11,6 +11,7 @@ import {
   DeleteButton,
   UpdateButton,
   ViewButton,
+  AddButton,
 } from "@/components/common/CustomInputs";
 import {
   Table,
@@ -27,8 +28,13 @@ import { EmptyTable } from "@/components/common/EmptyTable";
 import { DeleteDialog } from "@/components/common/CustomDialog";
 import { showError } from "@/lib/resuable-fns";
 import GiverForm from "../../components/user-management/GiverForm";
-import { AddButton } from "../../components/common/CustomInputs";
 import EditFormgiver from "@/components/user-management/Editformgiver";
+
+const statusFilterMenu = [
+  { key: "All", value: "all" },
+  { key: "Active", value: "active" },
+  { key: "Inactive", value: "inactive" },
+];
 
 function Caregiver() {
   const [search, setSearch] = useState("");
@@ -36,30 +42,43 @@ function Caregiver() {
   const [currentPage, setCurrentPage] = useState(1);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-
   const [openEditForm, setOpenEditForm] = useState(false);
+  const [openAddGiver, setOpenAddGiver] = useState(false);
 
-  const handleOpenEditForm = (userId: string) => {
-    setSelectedUserId(userId);
-    setOpenEditForm(true);
-  };
+  // Sorting state
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  const handleCloseEditForm = () => {
-    setOpenEditForm(false);
-    setSelectedUserId(null);
-  };
+  // Gender filter state
+  const [selectedGender, setSelectedGender] = useState<"all" | "male" | "female" | "other">("all");
+
+  // Status filter state
+  const [selectedStatus, setSelectedStatus] = useState<"all" | "active" | "inactive">("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+
   const filters = useMemo(
     () => ({
       page: currentPage,
       search: debouncedSearch,
+      status: statusFilter === "all" ? undefined : statusFilter,
     }),
-    [currentPage, debouncedSearch]
+    [currentPage, debouncedSearch, statusFilter]
   );
 
   const { data, isFetching, error } = useCareGivers(filters);
   const deleteCareGiver = useDeleteCareGiver();
   const navigate = useNavigate();
 
+  // Open/close edit form
+  const handleOpenEditForm = (userId: string) => {
+    setSelectedUserId(userId);
+    setOpenEditForm(true);
+  };
+  const handleCloseEditForm = () => {
+    setOpenEditForm(false);
+    setSelectedUserId(null);
+  };
+
+  // Toggle delete dialog
   const handleDeleteDialog = () => {
     setOpenDeleteDialog((prev) => !prev);
   };
@@ -75,7 +94,9 @@ function Caregiver() {
     });
   };
 
-  // Debounce search input
+  const handleOpenAddGiver = () => setOpenAddGiver((prev) => !prev);
+
+  // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search.trim());
@@ -86,20 +107,49 @@ function Caregiver() {
 
   // Handle API errors
   useEffect(() => {
-    if (error) {
-      showError(error);
-    }
+    if (error) showError(error);
   }, [error]);
 
   const users = data?.data?.users || [];
   const totalPages = data?.data?.totalPages || 1;
   const noUsers = users.length === 0;
-  const [openAddGiver, setOpenAddGiver] = useState(false);
-  const handleOpenAddGiver = () => {
-    setOpenAddGiver((prev) => !prev);
+
+  // Sort users alphabetically
+  const sortedUsers = useMemo(() => {
+    let filtered = [...users];
+
+    // Apply gender filter
+    if (selectedGender !== "all") {
+      filtered = filtered.filter(
+        (u) => (u.gender?.toLowerCase() || "other") === selectedGender.toLowerCase()
+      );
+    }
+
+    // Apply status filter
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((user) => {
+        const isActive = user.totalBookingsAllocated > 0;
+        return statusFilter === "active" ? isActive : !isActive;
+      });
+    }
+
+    // Sort by name
+    return filtered.sort((a, b) => {
+      const nameA = a.name?.toLowerCase() || "";
+      const nameB = b.name?.toLowerCase() || "";
+      return sortOrder === "asc"
+        ? nameA.localeCompare(nameB)
+        : nameB.localeCompare(nameA);
+    });
+  }, [users, sortOrder, selectedGender, statusFilter]);
+
+  // Toggle sorting order
+  const toggleSortOrder = () => {
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
+
   return (
-    <div className=" table-main-container">
+    <div className="table-main-container">
       {/* Search & Filter */}
       <div className="flex gap-2 flex-wrap items-center mb-4">
         <GiverForm open={openAddGiver} handleOpen={handleOpenAddGiver} />
@@ -109,10 +159,11 @@ function Caregiver() {
           <CustomInput
             text={search}
             setText={setSearch}
-            className="py-5 border-none focus-visible:ring-0"
-            placeholder="Search by email or name"
+            className="py-5 border-none focus-visible:ring-0 "
+            placeholder="Search Care Giver"
           />
         </div>
+
         <button
           onClick={handleOpenAddGiver}
           className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-md transition"
@@ -120,6 +171,19 @@ function Caregiver() {
           <AddButton className="text-white font-bold !border-0 !size-7" />
           <span className="text-md font-medium">Create New Caregiver</span>
         </button>
+
+        {/* Add status filter */}
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="border border-gray-100 rounded p-2 text-sm bg-[#252525]"
+        >
+          {statusFilterMenu.map((item) => (
+            <option key={item.key} value={item.value}>
+              {item.key}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Table */}
@@ -127,34 +191,86 @@ function Caregiver() {
         <TableCaption>A list of caregivers</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
+            <TableHead
+              className="cursor-pointer select-none"
+              onClick={toggleSortOrder}
+            >
+              <div className="flex items-center gap-1">
+                Name
+                <ArrowUpDown
+                  size={16}
+                  className={`transition-transform duration-200 ${
+                    sortOrder === "asc" ? "rotate-180" : ""
+                  }`}
+                />
+              </div>
+            </TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Mobile no</TableHead>
-            <TableHead>Gender</TableHead>
+
+            {/* Gender with dropdown filter */}
+            <TableHead>
+              <div className="flex items-center justify-between gap-4 ">
+                Gender
+                <select
+                  value={selectedGender}
+                  onChange={(e) =>
+                    setSelectedGender(e.target.value as "all" | "male" | "female" | "other")
+                  }
+                  className="border border-gray-100  rounded p-1  text-xs font-bold  bg-[#252525]"
+                >
+                  <option value="all">All</option>  
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </TableHead>
+  <TableHead>ZipCode</TableHead>
+            {/* Status with dropdown filter */}
+            <TableHead>
+              <div className="flex items-center justify-between gap-4 ">
+                Status
+                  
+              </div>
+            </TableHead>
+
+          
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {isFetching && <TableLoader colSpan={5} />}
+          {isFetching && <TableLoader colSpan={7} />}
           {!isFetching && noUsers && (
-            <EmptyTable colSpan={5} text="No givers found" />
+            <EmptyTable colSpan={7} text="No givers found" />
           )}
           {!isFetching &&
             !noUsers &&
-            users.map((user: any) => (
+            sortedUsers.map((user: any) => (
               <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.mobile}</TableCell>
                 <TableCell>{user.gender || "N/A"}</TableCell>
+                <TableCell>{user.zipcode || "N/A"}</TableCell>
+                <TableCell>
+                  <span
+                    className={`${
+                      user.totalBookingsAllocated > 0
+                        ? "text-green-600"
+                        : "text-red-600"
+                    } font-medium`}
+                  >
+                    {user.totalBookingsAllocated > 0 ? "Active" : "Inactive"}
+                  </span>
+                </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
                     <ViewButton
                       onClick={() => navigate(`/care-giver/${user.id}`)}
                     />
                     <UpdateButton onClick={() => handleOpenEditForm(user.id)} />
-
                     <DeleteButton
                       onClick={() => {
                         handleDeleteDialog();
@@ -192,6 +308,7 @@ function Caregiver() {
         />
       )}
 
+      {/* Edit Form */}
       {selectedUserId && (
         <EditFormgiver
           open={openEditForm}

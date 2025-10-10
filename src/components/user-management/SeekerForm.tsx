@@ -15,6 +15,13 @@ import { CustomButton } from "../common/CustomInputs";
 import CustomDrawer from "../common/CustomDrawer";
 import { useCreateSeeker } from "@/store/data/users/hooks";
 import { LoadingSpinner } from "../LoadingSpinner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"; // ✅ Import Select components
 
 export const formSchema = z.object({
   name: z.string().min(3).max(255),
@@ -67,6 +74,7 @@ function SeekerForm({ open, handleOpen }: Props) {
       <div className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Name */}
             <FormField
               control={form.control}
               name="name"
@@ -81,6 +89,7 @@ function SeekerForm({ open, handleOpen }: Props) {
               )}
             />
 
+            {/* Email */}
             <FormField
               control={form.control}
               name="email"
@@ -99,6 +108,7 @@ function SeekerForm({ open, handleOpen }: Props) {
               )}
             />
 
+            {/* Mobile */}
             <FormField
               control={form.control}
               name="mobile"
@@ -117,6 +127,7 @@ function SeekerForm({ open, handleOpen }: Props) {
               )}
             />
 
+            {/* Address */}
             <FormField
               control={form.control}
               name="address"
@@ -135,6 +146,7 @@ function SeekerForm({ open, handleOpen }: Props) {
               )}
             />
 
+            {/* Zip Code */}
             <FormField
               control={form.control}
               name="zipcode"
@@ -153,19 +165,28 @@ function SeekerForm({ open, handleOpen }: Props) {
               )}
             />
 
+            {/* ✅ Gender Dropdown */}
             <FormField
               control={form.control}
               name="gender"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Gender</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter careseeker gender"
-                      {...field}
-                    />
-                  </FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

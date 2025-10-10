@@ -13,10 +13,12 @@ interface getAllChatsResponse extends responseType {
     conversations: chatType[];
   };
 }
+
 export const useGetAllChats = () => {
   return useQuery<getAllChatsResponse>({
     queryKey: ["chats"],
     queryFn: () => getAllChats(),
+    staleTime: 5 * 60 * 1000, // Consider data stale after 5 minutes
   });
 };
 
