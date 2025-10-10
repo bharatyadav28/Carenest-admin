@@ -195,7 +195,7 @@ function Bookings() {
                   <TableCell>{booking.user.email}</TableCell>
                   <TableCell>{convertToDate(booking.bookedOn)}</TableCell>
                   <TableCell>{convertToDate(booking.startDate)}</TableCell>
-                  <TableCell>{convertToDate(booking.endDate)}</TableCell>
+                  <TableCell>{convertToDate(booking.endDate ?? undefined)}</TableCell>
                   <TableCell>
                     <span
                       className={
