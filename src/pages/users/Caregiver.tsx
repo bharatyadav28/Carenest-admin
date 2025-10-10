@@ -52,7 +52,6 @@ function Caregiver() {
   const [selectedGender, setSelectedGender] = useState<"all" | "male" | "female" | "other">("all");
 
   // Status filter state
-  const [selectedStatus, setSelectedStatus] = useState<"all" | "active" | "inactive">("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
   const filters = useMemo(

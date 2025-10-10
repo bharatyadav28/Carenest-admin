@@ -20,7 +20,7 @@ function InboxBlock() {
   
 
       // Auto refresh chat list
-      queryClient.invalidateQueries(["chats"]);
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
     };
 
     onNewMessage(handleNewMessage); 
@@ -34,7 +34,7 @@ function InboxBlock() {
   return (
     <div className="grid grid-cols-12 gap-6 overflow-hidden bg-[#0f0f0f]">
       <div className={`col-start-1 md:col-end-6 col-end-13 card mr-1 bg-[#000] relative ${
-        hasNewMessage ? 'animate-pulse' : ''
+        hasNewMessage ? '' : ''
       }`}>
     
         <MessageList handleOpenMessages={handleOpenMessages} />

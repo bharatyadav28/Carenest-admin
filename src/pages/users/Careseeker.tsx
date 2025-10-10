@@ -116,7 +116,7 @@ function Careseeker() {
   const sortedUsers = useMemo(() => {
     let filtered = [...users];
     if (statusFilter !== "all") {
-      filtered = users.filter((user) => {
+      filtered = users.filter((user: { activeBookings: string }) => {
         const isActive = parseInt(user.activeBookings) > 0;
         return statusFilter === "active" ? isActive : !isActive;
       });
