@@ -57,7 +57,122 @@ function AppSidebar() {
       Icon: BookingIcon,
       path: "/bookings",
     },
+ {
+      name: "Content Management",
+      Icon: UserIcon,
+      hasSubMenu: true,
+      subMenuItems: [
+        {
+          name: "Hero Section",
+          Icon: UserIcon,
+          path: "/hero-section",
+        },
+        {
+          name: "About Section",
+          Icon: UserIcon,
+          path: "/about-section",
+        },
+            {
+          name: " Who We Are",
+          Icon: UserIcon,
+          path: "/who-we-are",
+        },
+          {
+          name: "Resources Section",
+          Icon: UserIcon,
+          path: "/resources-section",
+        },
+        {
+          name: "Blog Section",
+          Icon: UserIcon,
+          path: "/blog-section",
+        },
+        {
+          name: "Testimonial Section",
+          Icon: UserIcon,
+          path: "/testimonial-section",
+        },
+                {
+          name: "FAQ Section",
+          Icon: UserIcon,
+          path: "/faq-section",
+        },
+        
+        {
+          name: "Contact Section",
+          Icon: UserIcon,
+          path: "/contact-section",
+        },
+          {
+          name: "Footer Section",
+          Icon: UserIcon,
+          path: "/footer-section",
+        }
 
+
+        
+        
+      ],
+    },
+       {
+      name: "Services Pages",
+      Icon: UserIcon,
+      hasSubMenu: true,
+      subMenuItems: [
+        {
+          name: "Personal Care",
+          Icon: UserIcon,
+          path: "/personal-care",
+        },
+        {
+          name: "Home Care",
+          Icon: UserIcon,
+          path: "/home-care",
+        },
+          {
+          name: "Companinion Care",
+          Icon: UserIcon,
+          path: "/companion-care",
+        },
+          {
+          name: "Specialized Care",
+          Icon: UserIcon,
+          path: "/specialized-care",
+        },
+           {
+          name: "Sitter Service",
+          Icon: UserIcon,
+          path: "/sitter-services",
+        },
+               {
+          name: "Transportation Service",
+          Icon: UserIcon,
+          path: "/transportation-service",
+        },
+      ],
+    },
+       {
+      name: " Policy Management",
+      Icon: UserIcon,
+      hasSubMenu: true,
+      subMenuItems: [
+        {
+          name: "Privacy Policy",
+          Icon: UserIcon,
+          path: "/privacy-policy",
+        },
+        {
+          name: "Terms and Conditions",
+          Icon: UserIcon,
+          path: "/terms-and-conditions",
+        },
+           {
+          name: "legal ",
+          Icon: UserIcon,
+          path: "/legal",
+        },
+      ],
+    },
     {
       name: "Inbox",
       Icon: BookingIcon,

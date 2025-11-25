@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@/components/theme-provider";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -12,9 +12,25 @@ import Bookings from "./pages/bookings/Bookings";
 import Careseeker from "./pages/users/Careseeker";
 import Caregiver from "./pages/users/Caregiver";
 import BookingDetails from "./pages/bookings/BookingDetails";
+import HeroSectionManagement from "./pages/heroSection/HeroSectionManagement";
+import AboutSectionManagement from "./pages/aboutSection/AboutSectionManagement";
+import ResourcesManagement from "./pages/resourcesSection/Resources";
+import TestimonialManagement from "./pages/testimonials/TestimonialsManagement";
+import BlogManagement from "./pages/blog/BlogManagement";
+import ContactManagement from "./pages/contact/ContactManagement";
 import CareseekerDetail from "./components/user-management/CareseekerDetail";
 import CaregiverDetail from "./components/user-management/CaregiverDetail";
+import PolicyManagement from "./pages/policies/PolicyManagement";
+import PersonalCare from "./pages/services/PersonalCare";
+import HomeCare from "./pages/services/HomeCare";
+import SpecializedCare from "./pages/services/SpecializedCare";
+import SitterServices from "./pages/services/SitterServices";
+import CompanionCare from "./pages/services/CompanionCare";
+import TransportationCare from "./pages/services/TransportationCare";
 import Inbox from "./pages/Inbox";
+import FooterManagement from "./pages/FooterManagement/FooterManagement";
+import WhoWeAreManagement from "./pages/WhoWeAreManagement/WhoWeAreManagement";
+import FAQManagement from "./pages/faq/FAQManagement";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,7 +69,6 @@ function App() {
             },
           ],
         },
-
         {
           path: "/care-giver",
           children: [
@@ -67,7 +82,6 @@ function App() {
             },
           ],
         },
-
         {
           path: "/bookings",
           children: [
@@ -81,19 +95,95 @@ function App() {
             },
           ],
         },
-
         {
           path: "/inbox",
           Component: Inbox,
         },
+        // New Content Management Routes
+        {
+          path: "/hero-section",
+          Component: HeroSectionManagement,
+        },
+        {
+          path: "/about-section",
+          Component: AboutSectionManagement,
+        },
+        {
+          path: "/resources-section",
+          Component:ResourcesManagement,
+        },
+           {
+          path: "/faq-section",
+          Component:FAQManagement,
+        },
+        {
+             path:"/who-we-are",
+             Component:WhoWeAreManagement,
+        },
+        {
+          path: "/blog-section",
+          Component:  BlogManagement,
+        },
+        {
+          path: "/testimonial-section",
+          Component: TestimonialManagement,
+        },
+        {
+          path: "/contact-section",
+          Component: ContactManagement,
+        },
+             {
+          path: "/personal-care",
+          Component: PersonalCare,
+        },
+
+        {
+          path: "/home-care",
+          Component: HomeCare,
+        },
+
+        {
+          path: "/specialized-care",
+          Component: SpecializedCare,
+        },
+
+        {
+          path: "/sitter-services",
+          Component: SitterServices,
+        },
+
+        {
+          path: "/companion-care",
+          Component: CompanionCare,
+        },
+
+        {
+          path: "/transportation-service",
+          Component: TransportationCare,
+        },
+
+        {
+  path: "/privacy-policy",
+  Component: PolicyManagement,
+},
+{
+  path: "/terms-and-conditions", 
+  Component: PolicyManagement,
+},
+{
+  path: "/footer-section",
+  Component: FooterManagement,
+},
+{
+  path: "/legal",
+  Component: PolicyManagement,
+}
       ],
     },
-
     {
       path: "/signin",
       Component: Signin,
     },
-
     {
       path: "*",
       Component: NotFound,
@@ -103,7 +193,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <RouterProvider router={router}></RouterProvider>
+        <RouterProvider router={router} />
         <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
