@@ -656,12 +656,11 @@ function AboutSectionManagement() {
                           >
                             Edit
                           </CustomButton>
-                          {/* <CustomButton
+                          <CustomButton
                             onClick={() => openDeleteConfirm('keyPerson', index)}
-                            variant="destructive"
                           >
                             <TrashIcon className="w-4 h-4" />
-                          </CustomButton> */}
+                          </CustomButton>
                         </div>
                       )}
                     </div>
@@ -669,6 +668,7 @@ function AboutSectionManagement() {
                       <div className="flex-shrink-0">
                         <img
                           src={person.personImage}
+                          
                           alt={person.personName}
                           className="w-32 h-32 object-cover rounded-lg"
                         />

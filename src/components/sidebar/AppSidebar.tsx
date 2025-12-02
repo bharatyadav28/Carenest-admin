@@ -82,6 +82,11 @@ function AppSidebar() {
           Icon: UserIcon,
           path: "/resources-section",
         },
+               {
+          name: "Become Caregiver Section",
+          Icon: UserIcon,
+          path: "/become-caregiver-section",
+        },
         {
           name: "Blog Section",
           Icon: UserIcon,
@@ -97,6 +102,11 @@ function AppSidebar() {
           Icon: UserIcon,
           path: "/faq-section",
         },
+               {
+      name: "Location Services",
+      Icon: BookingIcon,
+      path: "/location-services",
+    },
         
         {
           name: "Contact Section",
@@ -149,6 +159,11 @@ function AppSidebar() {
           Icon: UserIcon,
           path: "/transportation-service",
         },
+                 {
+          name: "Veterans Home Care ",
+          Icon: UserIcon,
+          path: "/veterans-home-care",
+        },
       ],
     },
        {
@@ -177,6 +192,11 @@ function AppSidebar() {
       name: "Inbox",
       Icon: BookingIcon,
       path: "/inbox",
+    },
+       {
+      name: "Caregiver Applications",
+      Icon: BookingIcon,
+      path: "/caregiver-applications",
     },
   ];
 

@@ -31,6 +31,10 @@ import Inbox from "./pages/Inbox";
 import FooterManagement from "./pages/FooterManagement/FooterManagement";
 import WhoWeAreManagement from "./pages/WhoWeAreManagement/WhoWeAreManagement";
 import FAQManagement from "./pages/faq/FAQManagement";
+import BecomeCaregiverManagement from "./pages/BecomeCaregiverManagement/BecomeCaregiverManagement";
+import CaregiverApplicationManagement from "./pages/CaregiverApplicationManagement/CaregiverApplicationManagement";
+import VeteransHomeCare from "./pages/veterans-home-care/VeteransHomeCareAdmin";
+import LocationServicesAdmin from "./pages/location-services/LocationServicesAdmin";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -136,10 +140,30 @@ function App() {
           path: "/personal-care",
           Component: PersonalCare,
         },
+                
 
+     {
+          path: "/veterans-home-care",
+          Component: VeteransHomeCare,
+        },
         {
           path: "/home-care",
           Component: HomeCare,
+        },
+
+        {
+          path: "/location-services",
+          Component: LocationServicesAdmin,
+        },
+
+        {
+              path:"/become-caregiver-section",
+              Component:BecomeCaregiverManagement,
+        },
+
+        {
+           path: "/caregiver-applications",
+           Component:CaregiverApplicationManagement,
         },
 
         {
