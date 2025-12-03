@@ -1,8 +1,32 @@
 import { useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { MdDashboard as DashboardIcon } from "react-icons/md";
-import { FaCalendarAlt as BookingIcon } from "react-icons/fa";
-import { FaUser as UserIcon } from "react-icons/fa";
+import { FaCalendarAlt as BookingIcon, FaUser as UserIcon } from "react-icons/fa";
+import { HiUsers as UsersIcon } from "react-icons/hi";
+import { HiDocumentText as ContentIcon } from "react-icons/hi2";
+import { RiShieldUserLine as HeroIcon } from "react-icons/ri";
+import { FiInfo as InfoIcon } from "react-icons/fi";
+import { TbUsersGroup as GroupIcon } from "react-icons/tb";
+import { IoDocumentsOutline as ResourcesIcon } from "react-icons/io5";
+import { AiOutlineUserAdd as CaregiverIcon } from "react-icons/ai";
+import { BsNewspaper as BlogIcon } from "react-icons/bs";
+import { AiOutlineStar as StarIcon } from "react-icons/ai";
+import { RiQuestionLine as QuestionIcon } from "react-icons/ri";
+import { GoLocation as LocationIcon } from "react-icons/go";
+import { MdOutlineContactMail as ContactIcon } from "react-icons/md";
+import { BiFoodMenu as FooterIcon } from "react-icons/bi";
+import { GiHeartPlus as HeartIcon } from "react-icons/gi";
+import { MdOutlineHomeWork as HomeIcon } from "react-icons/md";
+import { FaHandshake as HandshakeIcon } from "react-icons/fa";
+import { MdOutlineMedicalServices as MedicalIcon } from "react-icons/md";
+import { MdOutlineChildCare as ChildIcon } from "react-icons/md";
+import { MdDirectionsCar as CarIcon } from "react-icons/md";
+import { MdDirectionsCar as MilitaryIcon } from "react-icons/md";
+import { MdOutlinePolicy as PolicyIcon } from "react-icons/md";
+import { MdPrivacyTip as PrivacyIcon } from "react-icons/md";
+import { MdOutlineGavel as LegalIcon } from "react-icons/md";
+import { MdOutlineMail as InboxIcon } from "react-icons/md";
+import { MdOutlineAssignmentInd as ApplicationIcon } from "react-icons/md";
 
 import {
   Sidebar,
@@ -36,8 +60,8 @@ function AppSidebar() {
       path: "/",
     },
     {
-      name: "Users Mangement",
-      Icon: UserIcon,
+      name: "Users Management",
+      Icon: UsersIcon,
       hasSubMenu: true,
       subMenuItems: [
         {
@@ -47,7 +71,7 @@ function AppSidebar() {
         },
         {
           name: "Care Givers",
-          Icon: UserIcon,
+          Icon: GroupIcon,
           path: "/care-giver",
         },
       ],
@@ -57,145 +81,140 @@ function AppSidebar() {
       Icon: BookingIcon,
       path: "/bookings",
     },
- {
+    {
       name: "Content Management",
-      Icon: UserIcon,
+      Icon: ContentIcon,
       hasSubMenu: true,
       subMenuItems: [
         {
           name: "Hero Section",
-          Icon: UserIcon,
+          Icon: HeroIcon,
           path: "/hero-section",
         },
         {
           name: "About Section",
-          Icon: UserIcon,
+          Icon: InfoIcon,
           path: "/about-section",
         },
-            {
-          name: " Who We Are",
-          Icon: UserIcon,
+        {
+          name: "Who We Are",
+          Icon: GroupIcon,
           path: "/who-we-are",
         },
-          {
+        {
           name: "Resources Section",
-          Icon: UserIcon,
+          Icon: ResourcesIcon,
           path: "/resources-section",
         },
-               {
+        {
           name: "Become Caregiver Section",
-          Icon: UserIcon,
+          Icon: CaregiverIcon,
           path: "/become-caregiver-section",
         },
         {
           name: "Blog Section",
-          Icon: UserIcon,
+          Icon: BlogIcon,
           path: "/blog-section",
         },
         {
           name: "Testimonial Section",
-          Icon: UserIcon,
+          Icon: StarIcon,
           path: "/testimonial-section",
         },
-                {
+        {
           name: "FAQ Section",
-          Icon: UserIcon,
+          Icon: QuestionIcon,
           path: "/faq-section",
         },
-               {
-      name: "Location Services",
-      Icon: BookingIcon,
-      path: "/location-services",
-    },
-        
+        {
+          name: "Location Services",
+          Icon: LocationIcon,
+          path: "/location-services",
+        },
         {
           name: "Contact Section",
-          Icon: UserIcon,
+          Icon: ContactIcon,
           path: "/contact-section",
         },
-          {
+        {
           name: "Footer Section",
-          Icon: UserIcon,
+          Icon: FooterIcon,
           path: "/footer-section",
         }
-
-
-        
-        
       ],
     },
-       {
+    {
       name: "Services Pages",
-      Icon: UserIcon,
+      Icon: MedicalIcon,
       hasSubMenu: true,
       subMenuItems: [
         {
           name: "Personal Care",
-          Icon: UserIcon,
+          Icon: HeartIcon,
           path: "/personal-care",
         },
         {
           name: "Home Care",
-          Icon: UserIcon,
+          Icon: HomeIcon,
           path: "/home-care",
         },
-          {
-          name: "Companinion Care",
-          Icon: UserIcon,
+        {
+          name: "Companion Care",
+          Icon: HandshakeIcon,
           path: "/companion-care",
         },
-          {
+        {
           name: "Specialized Care",
-          Icon: UserIcon,
+          Icon: MedicalIcon,
           path: "/specialized-care",
         },
-           {
+        {
           name: "Sitter Service",
-          Icon: UserIcon,
+          Icon: ChildIcon,
           path: "/sitter-services",
         },
-               {
+        {
           name: "Transportation Service",
-          Icon: UserIcon,
+          Icon: CarIcon,
           path: "/transportation-service",
         },
-                 {
-          name: "Veterans Home Care ",
-          Icon: UserIcon,
+        {
+          name: "Veterans Home Care",
+          Icon: MilitaryIcon,
           path: "/veterans-home-care",
         },
       ],
     },
-       {
-      name: " Policy Management",
-      Icon: UserIcon,
+    {
+      name: "Policy Management",
+      Icon: PolicyIcon,
       hasSubMenu: true,
       subMenuItems: [
         {
           name: "Privacy Policy",
-          Icon: UserIcon,
+          Icon: PrivacyIcon,
           path: "/privacy-policy",
         },
         {
           name: "Terms and Conditions",
-          Icon: UserIcon,
+          Icon: ContentIcon,
           path: "/terms-and-conditions",
         },
-           {
-          name: "legal ",
-          Icon: UserIcon,
+        {
+          name: "Legal",
+          Icon: LegalIcon,
           path: "/legal",
         },
       ],
     },
     {
       name: "Inbox",
-      Icon: BookingIcon,
+      Icon: InboxIcon,
       path: "/inbox",
     },
-       {
+    {
       name: "Caregiver Applications",
-      Icon: BookingIcon,
+      Icon: ApplicationIcon,
       path: "/caregiver-applications",
     },
   ];
@@ -213,7 +232,7 @@ function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <div className="text-lg text-center font-bold h-[3rem] flex items-center justify-center">
-        CareWorks
+          CareWorks
         </div>
       </SidebarHeader>
 
@@ -229,7 +248,7 @@ function AppSidebar() {
               />
             ) : (
               <Collapsible
-                className=" group/collapsible "
+                className="group/collapsible"
                 defaultOpen={isOpenByDefault(item)}
                 key={item.name}
               >
@@ -237,7 +256,7 @@ function AppSidebar() {
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton className="ps-4 pr-2">
                       <item.Icon />
-                      <span> {item.name} </span>
+                      <span>{item.name}</span>
                       <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>

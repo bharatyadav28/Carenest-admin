@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CustomButton } from "@/components/common/CustomInputs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import RichTextEditor from "@/components/common/RichTextEditor"; // Add this import
 
 // Mock hook - replace with your actual API hook
 import { useHeroSection, useUpdateHeroSection } from "@/store/data/cms/herosection/hook";
@@ -56,7 +57,6 @@ function HeroSectionManagement() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     updateHeroSection.mutate(values, {
       onSuccess: () => {
-     
         setIsEditing(false);
       },
       onError: (error) => {
@@ -105,20 +105,14 @@ function HeroSectionManagement() {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="flex justify-end items-center">
-   
-     
-       
-          <CustomButton
-            onClick={handleEditToggle}
-            className="flex items-center gap-2"
-          >
-            <EditIcon className="w-6 h-6" />
-            {isEditing ? "Cancel" : "Edit"}
-          </CustomButton>
-       
+        <CustomButton
+          onClick={handleEditToggle}
+          className="flex items-center gap-2"
+        >
+          <EditIcon className="w-6 h-6" />
+          {isEditing ? "Cancel" : "Edit"}
+        </CustomButton>
       </div>
-
-   
 
       {/* Edit Form */}
       <Card>
@@ -143,11 +137,11 @@ function HeroSectionManagement() {
                       />
                     </FormControl>
                     <FormMessage />
-               
                   </FormItem>
                 )}
               />
 
+              {/* Updated: Changed from Textarea to RichTextEditor */}
               <FormField
                 control={form.control}
                 name="description"
@@ -155,15 +149,14 @@ function HeroSectionManagement() {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea
+                      <RichTextEditor
+                        value={field.value}
+                        onChange={field.onChange}
+                        readOnly={!isEditing}
                         placeholder="Enter your description text"
-                        {...field}
-                        disabled={!isEditing}
-                        className="min-h-[120px] resize-none"
                       />
                     </FormControl>
                     <FormMessage />
-              
                   </FormItem>
                 )}
               />
@@ -183,7 +176,6 @@ function HeroSectionManagement() {
                         />
                       </FormControl>
                       <FormMessage />
-                  
                     </FormItem>
                   )}
                 />
@@ -202,7 +194,6 @@ function HeroSectionManagement() {
                         />
                       </FormControl>
                       <FormMessage />
-                   
                     </FormItem>
                   )}
                 />
@@ -235,8 +226,6 @@ function HeroSectionManagement() {
           </Form>
         </CardContent>
       </Card>
-
-  
 
       {isFetching && <PageLoadingSpinner />}
     </div>

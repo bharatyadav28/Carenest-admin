@@ -17,7 +17,7 @@ const TextEditor = ({ value, onChange, readOnly = false, className, placeholder 
         onBlur={(newContent) => onChange(newContent)}
         config={{
           readonly: readOnly, // This controls the read-only state
-          height: 420,
+          height: 380,
           style: {
             background: "#2d2d2d",
             color: "#ffffff",

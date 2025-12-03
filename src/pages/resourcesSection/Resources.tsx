@@ -87,6 +87,7 @@ function ResourcesManagement() {
       redirectUrl: "",
       badges: [],
     },
+    mode: "onChange",
   });
 
   // Reset forms when data is fetched
@@ -98,6 +99,19 @@ function ResourcesManagement() {
       });
     }
   }, [resourcesData, mainForm]);
+
+  // Reset card form when entering add mode
+  useEffect(() => {
+    if (editingCard?.index === -1) {
+      cardForm.reset({
+        title: "",
+        description: "",
+        redirectUrl: "",
+        badges: [],
+      });
+      setBadgeInput("");
+    }
+  }, [editingCard]);
 
   useEffect(() => {
     if (error) {
@@ -128,6 +142,9 @@ function ResourcesManagement() {
       onSuccess: () => {
         setIsEditing(false);
       },
+      onError: (error) => {
+        showError(error);
+      }
     });
   };
 
@@ -136,39 +153,58 @@ function ResourcesManagement() {
 
     const currentBadges = cardForm.getValues("badges") || [];
     if (!currentBadges.includes(badgeInput.trim())) {
-      cardForm.setValue("badges", [...currentBadges, badgeInput.trim()]);
+      cardForm.setValue("badges", [...currentBadges, badgeInput.trim()], {
+        shouldValidate: true
+      });
     }
     setBadgeInput("");
   };
 
   const handleRemoveBadge = (badgeToRemove: string) => {
     const currentBadges = cardForm.getValues("badges") || [];
-    cardForm.setValue("badges", currentBadges.filter(badge => badge !== badgeToRemove));
+    cardForm.setValue("badges", currentBadges.filter(badge => badge !== badgeToRemove), {
+      shouldValidate: true
+    });
   };
 
-  const handleCardSubmit = (values: z.infer<typeof resourceCardSchema>) => {
+  const handleCardSubmit = async (values: z.infer<typeof resourceCardSchema>) => {
+    const isValid = await cardForm.trigger();
+    
+    if (!isValid) {
+      return;
+    }
+    
     if (editingCard) {
-      // Update existing card
-      const cardId = resourcesData?.resourceCards?.[editingCard.index]?.id;
-      if (cardId) {
-        updateResourceCard.mutate(
-          { cardId, cardData: values },
-          {
-            onSuccess: () => {
-              setEditingCard(null);
-              cardForm.reset();
-            },
+      if (editingCard.index >= 0) {
+        // Update existing card
+        const cardId = resourcesData?.resourceCards?.[editingCard.index]?.id;
+        
+        if (cardId) {
+          updateResourceCard.mutate(
+            { cardId, cardData: values },
+            {
+              onSuccess: () => {
+                setEditingCard(null);
+                cardForm.reset();
+              },
+              onError: (error) => {
+                showError(error);
+              }
+            }
+          );
+        }
+      } else {
+        // Add new card (index === -1)
+        addResourceCard.mutate(values, {
+          onSuccess: () => {
+            setEditingCard(null);
+            cardForm.reset();
+          },
+          onError: (error) => {
+            showError(error);
           }
-        );
+        });
       }
-    } else {
-      // Add new card
-      addResourceCard.mutate(values, {
-        onSuccess: () => {
-          setEditingCard(null);
-          cardForm.reset();
-        },
-      });
     }
   };
 
@@ -182,6 +218,9 @@ function ResourcesManagement() {
           setOpenDeleteDialog(false);
           setCardToDelete(null);
         },
+        onError: (error) => {
+          showError(error);
+        }
       });
     }
   };
@@ -220,10 +259,7 @@ function ResourcesManagement() {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="flex justify-end items-center">
-    
         <div className="flex items-center gap-4">
-   
-          
           <CustomButton
             onClick={handleEditToggle}
             className="flex items-center gap-2"
@@ -319,7 +355,7 @@ function ResourcesManagement() {
         <CardContent>
           {/* Add/Edit Resource Card Form */}
           {editingCard && (
-            <Card className="mb-6 border-blue-200 ">
+            <Card className="mb-6 border-blue-200">
               <CardContent className="pt-6">
                 <Form {...cardForm}>
                   <form onSubmit={cardForm.handleSubmit(handleCardSubmit)} className="space-y-6">
@@ -403,7 +439,7 @@ function ResourcesManagement() {
                           name="badges"
                           render={({ field }) => (
                             <>
-                              <div className="flex flex-wrap gap-2">
+                              <div className="flex flex-wrap gap-2 mt-2">
                                 {field.value?.map((badge, index) => (
                                   <Badge key={index} variant="secondary" className="flex items-center gap-1">
                                     {badge}
@@ -417,6 +453,11 @@ function ResourcesManagement() {
                                   </Badge>
                                 ))}
                               </div>
+                              {!field.value?.length && (
+                                <div className="text-sm text-muted-foreground">
+                                  Add at least one badge
+                                </div>
+                              )}
                               <FormMessage />
                             </>
                           )}
@@ -444,6 +485,22 @@ function ResourcesManagement() {
                         Cancel
                       </CustomButton>
                     </div>
+                    
+                    {/* Validation summary */}
+                    {Object.keys(cardForm.formState.errors).length > 0 && (
+                      <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                        <p className="text-sm font-medium text-red-800">
+                          Please fix the following errors:
+                        </p>
+                        <ul className="mt-1 text-sm text-red-700 list-disc list-inside">
+                          {Object.entries(cardForm.formState.errors).map(([field, error]) => (
+                            <li key={field}>
+                              {field}: {error?.message as string}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </form>
                 </Form>
               </CardContent>
