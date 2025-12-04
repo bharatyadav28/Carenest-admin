@@ -49,7 +49,9 @@ const resourceCardSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().min(1, { message: "Description is required" }),
   redirectUrl: z.string().url({ message: "Valid URL is required" }),
-  badges: z.array(z.string().min(1)).min(1, { message: "At least one badge is required" }),
+  badges: z.array(z.string().min(1))
+    .min(1, { message: "At least one badge is required" })
+    .max(4, { message: "Maximum 4 badges allowed" }), // Add max validation
 });
 
 function ResourcesManagement() {
@@ -152,10 +154,24 @@ function ResourcesManagement() {
     if (!badgeInput.trim()) return;
 
     const currentBadges = cardForm.getValues("badges") || [];
+    
+    // Check if maximum badges reached
+    if (currentBadges.length >= 4) {
+      cardForm.setError("badges", {
+        type: "manual",
+        message: "Maximum 4 badges allowed"
+      });
+      return;
+    }
+    
     if (!currentBadges.includes(badgeInput.trim())) {
       cardForm.setValue("badges", [...currentBadges, badgeInput.trim()], {
         shouldValidate: true
       });
+      // Clear any previous error if badges are now valid
+      if (cardForm.formState.errors.badges) {
+        cardForm.clearErrors("badges");
+      }
     }
     setBadgeInput("");
   };
@@ -412,7 +428,7 @@ function ResourcesManagement() {
                     />
 
                     <FormItem>
-                      <FormLabel>Badges</FormLabel>
+                      <FormLabel>Badges (Max 4)</FormLabel>
                       <div className="space-y-2">
                         <div className="flex gap-2">
                           <Input
@@ -425,14 +441,23 @@ function ResourcesManagement() {
                                 handleAddBadge();
                               }
                             }}
+                            disabled={cardForm.watch("badges")?.length >= 4} // Disable input when max reached
                           />
                           <CustomButton
                             type="button"
                             onClick={handleAddBadge}
+                            disabled={cardForm.watch("badges")?.length >= 4} // Disable button when max reached
                           >
                             Add
                           </CustomButton>
                         </div>
+                        
+                        {/* Show badge limit message */}
+                        {cardForm.watch("badges")?.length >= 4 && (
+                          <div className="text-sm text-amber-600">
+                            Maximum 4 badges reached. Remove a badge to add more.
+                          </div>
+                        )}
                         
                         <FormField
                           control={cardForm.control}
@@ -455,7 +480,7 @@ function ResourcesManagement() {
                               </div>
                               {!field.value?.length && (
                                 <div className="text-sm text-muted-foreground">
-                                  Add at least one badge
+                                  Add at least one badge (max 4)
                                 </div>
                               )}
                               <FormMessage />
@@ -469,7 +494,7 @@ function ResourcesManagement() {
                       <CustomButton
                         type="submit"
                         className="flex items-center gap-2 green-button"
-                        disabled={addResourceCard.isPending || updateResourceCard.isPending}
+                        disabled={addResourceCard.isPending || updateResourceCard.isPending || cardForm.watch("badges")?.length > 4}
                       >
                         {addResourceCard.isPending || updateResourceCard.isPending ? (
                           <LoadingSpinner />
@@ -495,7 +520,7 @@ function ResourcesManagement() {
                         <ul className="mt-1 text-sm text-red-700 list-disc list-inside">
                           {Object.entries(cardForm.formState.errors).map(([field, error]) => (
                             <li key={field}>
-                              {field}: {error?.message as string}
+                              {field === "badges" ? "Badges" : field}: {error?.message as string}
                             </li>
                           ))}
                         </ul>

@@ -77,7 +77,7 @@ function EditFormgiver({ open, handleOpen, userId, role }: Props) {
         mobile: user.mobile ?? "",
         address: user.address ?? "",
         zipcode: user.zipcode?.toString() ?? "",
-        gender: user.gender?.toLowerCase() ?? "",
+        gender: user.gender ?? "", // Keep original case
       });
     }
   }, [userData, form]);

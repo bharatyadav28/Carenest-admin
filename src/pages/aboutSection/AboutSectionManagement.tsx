@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -104,6 +104,8 @@ function AboutSectionManagement() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{ type: string; index: number } | null>(null);
 
+  const editFormRef = useRef<HTMLDivElement>(null);
+
   const replacePageName = useGeneral((state) => state.replacePageName);
 
   const { data, isFetching, error } = useAboutUs();
@@ -113,6 +115,8 @@ function AboutSectionManagement() {
   const updateOurValues = useUpdateOurValues();
 
   const aboutData = data?.data?.aboutUs;
+  const currentKeyPeopleCount = aboutData?.keyPeople?.length || 0;
+  const maxKeyPeople = 3; // Maximum allowed key people
 
   // Main form for basic sections
   const mainForm = useForm<z.infer<typeof mainSectionSchema>>({
@@ -193,6 +197,19 @@ function AboutSectionManagement() {
     }
   }, [aboutData, mainForm, valuesForm, missionForm, teamForm]);
 
+  // Scroll to edit form when editing starts
+  useEffect(() => {
+    if (editingItem && editFormRef.current) {
+      // Small delay to ensure form is rendered
+      setTimeout(() => {
+        editFormRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [editingItem]);
+
   useEffect(() => {
     if (error) {
       showError(error);
@@ -264,6 +281,12 @@ function AboutSectionManagement() {
 
   const handleAddItem = {
     keyPerson: (values: z.infer<typeof keyPersonSchema>) => {
+      // Check if maximum key people reached
+      if (currentKeyPeopleCount >= maxKeyPeople) {
+        showError(new Error(`Maximum ${maxKeyPeople} key people allowed. Please delete one to add a new key person.`));
+        return;
+      }
+
       const newPerson: KeyPersonType = {
         id: `temp-${Date.now()}`,
         ...values,
@@ -382,7 +405,23 @@ function AboutSectionManagement() {
   };
 
   const startEditingItem = (type: string, index: number, data: any) => {
+    // First set the active section based on the item type
+    switch (type) {
+      case 'keyPerson':
+        setActiveSection('keyPeople');
+        break;
+      case 'value':
+        setActiveSection('values');
+        break;
+      case 'teamMember':
+        setActiveSection('team');
+        break;
+    }
+    
+    // Then set the editing item (this will trigger the useEffect to scroll)
     setEditingItem({ type, index, data });
+    
+    // Set form data based on type
     switch (type) {
       case 'keyPerson':
         keyPersonForm.reset(data);
@@ -427,7 +466,13 @@ function AboutSectionManagement() {
         {['main', 'keyPeople', 'values', 'mission', 'team'].map((section) => (
           <button
             key={section}
-            onClick={() => setActiveSection(section)}
+            onClick={() => {
+              setActiveSection(section);
+              if (editingItem) {
+                setEditingItem(null);
+                cancelEditing();
+              }
+            }}
             className={`px-6 py-3 rounded-lg text-lg font-medium transition-colors ${
               activeSection === section
                 ? 'bg-green-700 text-white'
@@ -435,7 +480,7 @@ function AboutSectionManagement() {
             }`}
           >
             {section === 'main' && 'Main Section'}
-            {section === 'keyPeople' && 'Key People'}
+            {section === 'keyPeople' && `Key People (${currentKeyPeopleCount}/${maxKeyPeople})`}
             {section === 'values' && 'Our Values'}
             {section === 'mission' && 'Our Mission'}
             {section === 'team' && 'Our Team'}
@@ -516,11 +561,19 @@ function AboutSectionManagement() {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <CardTitle>Key People</CardTitle>
+              <CardTitle>Key People ({currentKeyPeopleCount}/{maxKeyPeople})</CardTitle>
               {isEditing && (
                 <CustomButton
-                  onClick={() => setEditingItem({ type: 'keyPerson', index: -1 })}
+                  onClick={() => {
+                    // Check if maximum reached before allowing to add
+                    if (currentKeyPeopleCount >= maxKeyPeople) {
+                      showError(new Error(`Maximum ${maxKeyPeople} key people allowed. Please delete one to add a new key person.`));
+                      return;
+                    }
+                    setEditingItem({ type: 'keyPerson', index: -1 });
+                  }}
                   className="flex items-center gap-2"
+                  disabled={currentKeyPeopleCount >= maxKeyPeople}
                 >
                   <PlusIcon className="w-4 h-4" />
                   Add Key Person
@@ -531,112 +584,114 @@ function AboutSectionManagement() {
           <CardContent>
             {/* Add/Edit Key Person Form */}
             {editingItem?.type === 'keyPerson' && (
-              <Card className="mb-6 border-blue-200 ">
-                <CardContent className="pt-6">
-                  <Form {...keyPersonForm}>
-                    <form onSubmit={keyPersonForm.handleSubmit(
-                      editingItem.index === -1 ? handleAddItem.keyPerson : handleEditItem.keyPerson
-                    )} className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField
-                          control={keyPersonForm.control}
-                          name="personName"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Enter person name"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={keyPersonForm.control}
-                          name="personTitle"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Title</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Enter person title"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <FormField
-                        control={keyPersonForm.control}
-                        name="personImage"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Profile Image</FormLabel>
-                            <FormControl>
-                              <div className="space-y-4">
-                                <ImageUpload
-                                  onImageUpload={(url) => handleImageUpload(field, url)}
-                                  currentImage={field.value}
-                                  disabled={!isEditing}
-                                />
-                                {field.value && (
+              <div ref={editFormRef}>
+                <Card className="mb-6 border-blue-200">
+                  <CardContent className="pt-6">
+                    <Form {...keyPersonForm}>
+                      <form onSubmit={keyPersonForm.handleSubmit(
+                        editingItem.index === -1 ? handleAddItem.keyPerson : handleEditItem.keyPerson
+                      )} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <FormField
+                            control={keyPersonForm.control}
+                            name="personName"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
                                   <Input
+                                    placeholder="Enter person name"
                                     {...field}
-                                    readOnly
                                   />
-                                )}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                      <FormField
-                        control={keyPersonForm.control}
-                        name="personDescription"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                              <RichTextEditor
-                                value={field.value}
-                                onChange={field.onChange}
-                                className="min-h-[200px]"
-                                readOnly={!isEditing}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                          <FormField
+                            control={keyPersonForm.control}
+                            name="personTitle"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Title</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Enter person title"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
 
-                      <div className="flex gap-4 pt-4">
-                        <CustomButton
-                          type="submit"
-                          className="flex items-center gap-2 green-button"
-                        >
-                          <SaveIcon className="w-4 h-4" />
-                          {editingItem.index === -1 ? 'Add Person' : 'Update Person'}
-                        </CustomButton>
-                        <CustomButton
-                          type="button"
-                          onClick={cancelEditing}
-                        >
-                          Cancel
-                        </CustomButton>
-                      </div>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
+                        <FormField
+                          control={keyPersonForm.control}
+                          name="personImage"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Profile Image</FormLabel>
+                              <FormControl>
+                                <div className="space-y-4">
+                                  <ImageUpload
+                                    onImageUpload={(url) => handleImageUpload(field, url)}
+                                    currentImage={field.value}
+                                    disabled={!isEditing}
+                                  />
+                                  {field.value && (
+                                    <Input
+                                      {...field}
+                                      readOnly
+                                    />
+                                  )}
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={keyPersonForm.control}
+                          name="personDescription"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Description</FormLabel>
+                              <FormControl>
+                                <RichTextEditor
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  className="min-h-[200px]"
+                                  readOnly={!isEditing}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className="flex gap-4 pt-4">
+                          <CustomButton
+                            type="submit"
+                            className="flex items-center gap-2 green-button"
+                          >
+                            <SaveIcon className="w-4 h-4" />
+                            {editingItem.index === -1 ? 'Add Person' : 'Update Person'}
+                          </CustomButton>
+                          <CustomButton
+                            type="button"
+                            onClick={cancelEditing}
+                          >
+                            Cancel
+                          </CustomButton>
+                        </div>
+                      </form>
+                    </Form>
+                  </CardContent>
+                </Card>
+              </div>
             )}
 
             {/* Key People List */}
@@ -745,68 +800,69 @@ function AboutSectionManagement() {
 
             {/* Add/Edit Value Form */}
             {editingItem?.type === 'value' && (
-              <Card className="mb-6 border-green-200 ">
-                <CardContent className="pt-6">
-                  <Form {...valueForm}>
-                    <form onSubmit={valueForm.handleSubmit(
-                      editingItem.index === -1 ? handleAddItem.value : handleEditItem.value
-                    )} className="space-y-6">
-                      <FormField
-                        control={valueForm.control}
-                        name="valueName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Value Name</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter value name"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+              <div ref={editFormRef}>
+                <Card className="mb-6 border-green-200">
+                  <CardContent className="pt-6">
+                    <Form {...valueForm}>
+                      <form onSubmit={valueForm.handleSubmit(
+                        editingItem.index === -1 ? handleAddItem.value : handleEditItem.value
+                      )} className="space-y-6">
+                        <FormField
+                          control={valueForm.control}
+                          name="valueName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Value Name</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter value name"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                      <FormField
-                        control={valueForm.control}
-                        name="valueDescription"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Value Description</FormLabel>
-                            <FormControl>
-                              <Input
-                                value={field.value}
-                                onChange={field.onChange}
-                                placeholder="Enter value description"
-                              
-                                readOnly={!isEditing}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                        <FormField
+                          control={valueForm.control}
+                          name="valueDescription"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Value Description</FormLabel>
+                              <FormControl>
+                                <Input
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  placeholder="Enter value description"
+                                  readOnly={!isEditing}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                      <div className="flex gap-4 pt-4">
-                        <CustomButton
-                          type="submit"
-                          className="flex items-center gap-2 green-button"
-                        >
-                          <SaveIcon className="w-4 h-4" />
-                          {editingItem.index === -1 ? 'Add Value' : 'Update Value'}
-                        </CustomButton>
-                        <CustomButton
-                          type="button"
-                          onClick={cancelEditing}
-                        >
-                          Cancel
-                        </CustomButton>
-                      </div>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
+                        <div className="flex gap-4 pt-4">
+                          <CustomButton
+                            type="submit"
+                            className="flex items-center gap-2 green-button"
+                          >
+                            <SaveIcon className="w-4 h-4" />
+                            {editingItem.index === -1 ? 'Add Value' : 'Update Value'}
+                          </CustomButton>
+                          <CustomButton
+                            type="button"
+                            onClick={cancelEditing}
+                          >
+                            Cancel
+                          </CustomButton>
+                        </div>
+                      </form>
+                    </Form>
+                  </CardContent>
+                </Card>
+              </div>
             )}
 
             {/* Values List */}
@@ -970,93 +1026,95 @@ function AboutSectionManagement() {
 
             {/* Add/Edit Team Member Form */}
             {editingItem?.type === 'teamMember' && (
-              <Card className="mb-6 border-purple-200 ">
-                <CardContent className="pt-6">
-                  <Form {...teamMemberForm}>
-                    <form onSubmit={teamMemberForm.handleSubmit(
-                      editingItem.index === -1 ? handleAddItem.teamMember : handleEditItem.teamMember
-                    )} className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField
-                          control={teamMemberForm.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Enter team member name"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={teamMemberForm.control}
-                          name="role"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Role</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Enter team member role"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <FormField
-                        control={teamMemberForm.control}
-                        name="image"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Profile Image</FormLabel>
-                            <FormControl>
-                              <div className="space-y-4">
-                                <ImageUpload
-                                  onImageUpload={(url) => handleImageUpload(field, url)}
-                                  currentImage={field.value}
-                                  disabled={!isEditing}
-                                />
-                                {field.value && (
+              <div ref={editFormRef}>
+                <Card className="mb-6 border-purple-200">
+                  <CardContent className="pt-6">
+                    <Form {...teamMemberForm}>
+                      <form onSubmit={teamMemberForm.handleSubmit(
+                        editingItem.index === -1 ? handleAddItem.teamMember : handleEditItem.teamMember
+                      )} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <FormField
+                            control={teamMemberForm.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
                                   <Input
+                                    placeholder="Enter team member name"
                                     {...field}
-                                    readOnly
                                   />
-                                )}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                      <div className="flex gap-4 pt-4">
-                        <CustomButton
-                          type="submit"
-                          className="flex items-center gap-2 green-button"
-                        >
-                          <SaveIcon className="w-4 h-4" />
-                          {editingItem.index === -1 ? 'Add Team Member' : 'Update Team Member'}
-                        </CustomButton>
-                        <CustomButton
-                          type="button"
-                          onClick={cancelEditing}
-                        >
-                          Cancel
-                        </CustomButton>
-                      </div>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
+                          <FormField
+                            control={teamMemberForm.control}
+                            name="role"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Role</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Enter team member role"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <FormField
+                          control={teamMemberForm.control}
+                          name="image"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Profile Image</FormLabel>
+                              <FormControl>
+                                <div className="space-y-4">
+                                  <ImageUpload
+                                    onImageUpload={(url) => handleImageUpload(field, url)}
+                                    currentImage={field.value}
+                                    disabled={!isEditing}
+                                  />
+                                  {field.value && (
+                                    <Input
+                                      {...field}
+                                      readOnly
+                                    />
+                                  )}
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className="flex gap-4 pt-4">
+                          <CustomButton
+                            type="submit"
+                            className="flex items-center gap-2 green-button"
+                          >
+                            <SaveIcon className="w-4 h-4" />
+                            {editingItem.index === -1 ? 'Add Team Member' : 'Update Team Member'}
+                          </CustomButton>
+                          <CustomButton
+                            type="button"
+                            onClick={cancelEditing}
+                          >
+                            Cancel
+                          </CustomButton>
+                        </div>
+                      </form>
+                    </Form>
+                  </CardContent>
+                </Card>
+              </div>
             )}
 
             {/* Team Members Grid */}

@@ -29,6 +29,7 @@ import { DeleteDialog } from "@/components/common/CustomDialog";
 import { showError } from "@/lib/resuable-fns";
 import GiverForm from "../../components/user-management/GiverForm";
 import EditFormgiver from "@/components/user-management/Editformgiver";
+import { Tooltip } from "@/components/common/Tooltip";
 
 const statusFilterMenu = [
   { key: "All", value: "all" },
@@ -44,6 +45,7 @@ function Caregiver() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [openEditForm, setOpenEditForm] = useState(false);
   const [openAddGiver, setOpenAddGiver] = useState(false);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null); // Track which user is being deleted
 
   // Sorting state
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -72,6 +74,7 @@ function Caregiver() {
     setSelectedUserId(userId);
     setOpenEditForm(true);
   };
+  
   const handleCloseEditForm = () => {
     setOpenEditForm(false);
     setSelectedUserId(null);
@@ -85,11 +88,22 @@ function Caregiver() {
   const handleDeleteUser = () => {
     if (!selectedUserId) return;
 
+    // Set the deleting user ID before mutation
+    setDeletingUserId(selectedUserId);
+    
     deleteCareGiver.mutate(selectedUserId, {
       onSuccess: () => {
         setSelectedUserId(null);
+        setDeletingUserId(null); // Clear deleting state
         handleDeleteDialog();
       },
+      onError: () => {
+        setDeletingUserId(null); // Clear deleting state on error too
+      },
+      onSettled: () => {
+        // Alternative: Clear deleting state when mutation completes (success or error)
+        // setDeletingUserId(null);
+      }
     });
   };
 
@@ -225,16 +239,13 @@ function Caregiver() {
                 </select>
               </div>
             </TableHead>
-  <TableHead>ZipCode</TableHead>
+            <TableHead>ZipCode</TableHead>
             {/* Status with dropdown filter */}
             <TableHead>
               <div className="flex items-center justify-between gap-4 ">
                 Status
-                  
               </div>
             </TableHead>
-
-          
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -266,17 +277,23 @@ function Caregiver() {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <ViewButton
-                      onClick={() => navigate(`/care-giver/${user.id}`)}
-                    />
-                    <UpdateButton onClick={() => handleOpenEditForm(user.id)} />
-                    <DeleteButton
-                      onClick={() => {
-                        handleDeleteDialog();
-                        setSelectedUserId(user.id);
-                      }}
-                      isDeleting={deleteCareGiver.isPending}
-                    />
+                    <Tooltip text="View">
+                      <ViewButton
+                        onClick={() => navigate(`/care-giver/${user.id}`)}
+                      />
+                    </Tooltip>
+                    <Tooltip text="Edit">
+                      <UpdateButton onClick={() => handleOpenEditForm(user.id)} />
+                    </Tooltip>
+                    <Tooltip text="Delete">
+                      <DeleteButton
+                        onClick={() => {
+                          handleDeleteDialog();
+                          setSelectedUserId(user.id);
+                        }}
+                        isDeleting={deletingUserId === user.id && deleteCareGiver.isPending}
+                      />
+                    </Tooltip>
                   </div>
                 </TableCell>
               </TableRow>
@@ -295,7 +312,7 @@ function Caregiver() {
           setSelectedUserId(null);
         }}
         onConfirm={handleDeleteUser}
-        isDeleting={deleteCareGiver.isPending}
+        isDeleting={deleteCareGiver.isPending && deletingUserId === selectedUserId}
       />
 
       {/* Pagination */}

@@ -41,4 +41,4 @@ export const weekDayArray = [
   { key: "Saturday", value: 6 },
 ];
 
-export const cdnURL = "https://dev-creative-story.s3.us-east-1.amazonaws.com";
+export const cdnURL = "https://creative-story.s3.us-east-1.amazonaws.com";

@@ -89,13 +89,13 @@ function Signin() {
                       />
                       <span className="px-1 absolute right-2 top-1/2 -translate-y-1/2 ">
                         {!showPassword ? (
-                          <Eye
+                          <EyeClosed
                             onClick={() => setShowPassword((prev) => !prev)}
                             color="gray"
                             size={20}
                           />
                         ) : (
-                          <EyeClosed
+                          <Eye
                             onClick={() => setShowPassword((prev) => !prev)}
                             color="gray"
                             size={20}

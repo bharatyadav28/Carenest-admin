@@ -102,11 +102,11 @@ function MessageList({ handleOpenMessages }: Props) {
 
   return (
     <div className="w-full overflow-y-auto flex flex-col h-[calc(100vh-3.2rem)] p-1 border-rounded-md">
-      <div className="flex items-center rounded-full px-4 py-1 bg-[var(--light-gray)] mb-2">
+      <div className="flex items-center rounded-full px-4 py-1 bg-gray-800 mb-2 border-2">
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="ps-0 border-none focus-visible:ring-0"
+          className="ps-0 border-none focus-visible:ring-0 !bg-gray-800"
           placeholder="Search here..."
         />
         <SearchIcon size={18} className="text-[var(--cool-gray)]" />

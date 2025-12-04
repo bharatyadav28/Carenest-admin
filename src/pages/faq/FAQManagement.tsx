@@ -42,18 +42,18 @@ import {
 } from "@/store/data/cms/faq/hook";
 
 // Form schemas
-const faqSchema = z.object({
-  faqType: z.string().min(1, "FAQ type is required").max(100, "FAQ type must be less than 100 characters"),
-  sectionTitle: z.string().max(255, "Section title must be less than 255 characters").optional(),
-});
-
 const faqItemSchema = z.object({
   question: z.string().min(1, "Question is required").max(500, "Question must be less than 500 characters"),
   answer: z.string().min(1, "Answer is required"),
 });
 
-type FAQData = z.infer<typeof faqSchema>;
+const faqSchema = z.object({
+  faqType: z.string().min(1, "FAQ type is required").max(100, "FAQ type must be less than 100 characters"),
+  sectionTitle: z.string().max(255, "Section title must be less than 255 characters").optional(),
+});
+
 type FAQItemData = z.infer<typeof faqItemSchema>;
+type FAQData = z.infer<typeof faqSchema>;
 
 // Function to format FAQ type for display
 const formatFAQType = (faqType: string): string => {
@@ -77,6 +77,9 @@ function FAQManagement() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{ type: string; id?: string; itemId?: string; index?: number } | null>(null);
   const [creatingNewFAQ, setCreatingNewFAQ] = useState(false);
+  const [newFAQItems, setNewFAQItems] = useState<FAQItemData[]>([]);
+  const [isAddingQuestion, setIsAddingQuestion] = useState(false);
+  const [newQuestion, setNewQuestion] = useState<FAQItemData>({ question: '', answer: '' });
 
   const replacePageName = useGeneral((state) => state.replacePageName);
 
@@ -135,12 +138,18 @@ function FAQManagement() {
       setEditingItem(null);
       setEditingFAQ(null);
       setCreatingNewFAQ(false);
+      setNewFAQItems([]);
+      setIsAddingQuestion(false);
+      setNewQuestion({ question: '', answer: '' });
     }
   };
 
   const handleCreateNewFAQ = () => {
     setCreatingNewFAQ(true);
     setEditingFAQ(null);
+    setNewFAQItems([]);
+    setIsAddingQuestion(false);
+    setNewQuestion({ question: '', answer: '' });
     faqForm.reset({
       faqType: "",
       sectionTitle: "",
@@ -159,6 +168,9 @@ function FAQManagement() {
   const handleCancelCreate = () => {
     setCreatingNewFAQ(false);
     setEditingFAQ(null);
+    setNewFAQItems([]);
+    setIsAddingQuestion(false);
+    setNewQuestion({ question: '', answer: '' });
     faqForm.reset();
   };
 
@@ -179,15 +191,16 @@ function FAQManagement() {
         },
       });
     } else {
-      // Create new FAQ
+      // Create new FAQ with items
       const faqData = {
         ...values,
-        faqItems: [], // Start with empty items
+        faqItems: newFAQItems,
       };
 
       createFAQ.mutate(faqData, {
         onSuccess: () => {
           setCreatingNewFAQ(false);
+          setNewFAQItems([]);
           faqForm.reset();
           setActiveFAQType(values.faqType);
         },
@@ -277,9 +290,42 @@ function FAQManagement() {
     faqItemForm.reset();
   };
 
+  // Functions for handling new FAQ items
+  const handleAddNewQuestion = () => {
+    if (newQuestion.question.trim() && newQuestion.answer.trim()) {
+      setNewFAQItems([...newFAQItems, { ...newQuestion }]);
+      setNewQuestion({ question: '', answer: '' });
+      setIsAddingQuestion(false);
+    }
+  };
+
+  const handleRemoveNewQuestion = (index: number) => {
+    setNewFAQItems(newFAQItems.filter((_, i) => i !== index));
+  };
+
+  const handleEditNewQuestion = (index: number) => {
+    const question = newFAQItems[index];
+    setNewQuestion(question);
+    setNewFAQItems(newFAQItems.filter((_, i) => i !== index));
+  };
+
+  const handleToggleAddingQuestion = () => {
+    setIsAddingQuestion(!isAddingQuestion);
+    if (!isAddingQuestion) {
+      setNewQuestion({ question: '', answer: '' });
+    }
+  };
+
+  const handleCancelAddingQuestion = () => {
+    setIsAddingQuestion(false);
+    setNewQuestion({ question: '', answer: '' });
+  };
+
   if (isFetchingAll && !allFAQsData) {
     return <PageLoadingSpinner />;
   }
+
+  const setOpenDialog = setOpenDeleteDialog;
 
   return (
     <div className="space-y-6 p-6 min-h-screen">
@@ -326,12 +372,203 @@ function FAQManagement() {
         </div>
       )}
 
-      {/* Create/Edit FAQ Section */}
-      {isEditing && (creatingNewFAQ || editingFAQ) && (
+      {/* Create New FAQ Section with Questions */}
+      {isEditing && creatingNewFAQ && (
+        <Card className="border-blue-200">
+          <CardHeader>
+            <CardTitle className="text-xl">
+              Create New FAQ Section
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...faqForm}>
+              <form onSubmit={faqForm.handleSubmit(handleFAQSubmit)} className="space-y-6">
+                {/* FAQ Section Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={faqForm.control}
+                    name="faqType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>FAQ Type</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., companionCare, homeCare, personalCare"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                        <p className="text-sm text-white mt-1">
+                          Use existing types like: companionCare, homeCare, personalCare, sitter, specalizedCare, transportation
+                        </p>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={faqForm.control}
+                    name="sectionTitle"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Section Title (Optional)</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., What You Need To Know"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Questions Section */}
+                <div className="space-y-4 pt-6">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold">
+                      FAQ Questions ({newFAQItems.length})
+                    </h3>
+                    <CustomButton
+                      type="button"
+                      onClick={handleToggleAddingQuestion}
+                      className="flex items-center gap-2"
+                    >
+                      <PlusIcon className="w-4 h-4" />
+                      {isAddingQuestion ? 'Cancel Adding Question' : 'Add Question'}
+                    </CustomButton>
+                  </div>
+
+                  {/* Add Question Form */}
+                  {isAddingQuestion && (
+                    <Card className="border-green-200">
+                      <CardContent className="pt-6">
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-1">
+                              Question
+                            </label>
+                            <Input
+                              value={newQuestion.question}
+                              onChange={(e) => setNewQuestion({ ...newQuestion, question: e.target.value })}
+                              placeholder="Enter the question"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium mb-1">
+                              Answer
+                            </label>
+                            <Textarea
+                              value={newQuestion.answer}
+                              onChange={(e) => setNewQuestion({ ...newQuestion, answer: e.target.value })}
+                              placeholder="Enter the answer"
+                              className="min-h-[100px]"
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <CustomButton
+                              type="button"
+                              onClick={handleAddNewQuestion}
+                              disabled={!newQuestion.question.trim() || !newQuestion.answer.trim()}
+                              className="flex items-center gap-2"
+                            >
+                              <SaveIcon className="w-4 h-4" />
+                              Save Question
+                            </CustomButton>
+                            <CustomButton
+                              type="button"
+                              onClick={handleCancelAddingQuestion}
+                            >
+                              Cancel
+                            </CustomButton>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* List of Added Questions */}
+                  {newFAQItems.length > 0 && (
+                    <div className="space-y-3">
+                      {newFAQItems.map((item, index) => (
+                        <div key={index} className="border rounded-lg p-4 bg-inherit">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="text-sm font-medium bg-inherit px-2 py-1 rounded">
+                                  {index + 1}
+                                </span>
+                                <h4 className="font-semibold text-lg">
+                                  {item.question}
+                                </h4>
+                              </div>
+                              <p className="text-white mt-2 whitespace-pre-wrap">
+                                {item.answer}
+                              </p>
+                            </div>
+                            <div className="flex gap-2 ml-4">
+                              <CustomButton
+                                type="button"
+                                onClick={() => handleEditNewQuestion(index)}
+                              >
+                                Edit
+                              </CustomButton>
+                              <CustomButton
+                                type="button"
+                                onClick={() => handleRemoveNewQuestion(index)}
+                              >
+                                <TrashIcon className="w-4 h-4" />
+                              </CustomButton>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {newFAQItems.length === 0 && !isAddingQuestion && (
+                    <div className="text-center py-8 border-2 border-dashed rounded-lg">
+                      <HelpIcon className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                      <p className="text-gray-500">
+                        No questions added yet. Click "Add Question" to start.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Submit Buttons */}
+                <div className="flex gap-4 pt-6 border-t">
+                  <CustomButton
+                    type="submit"
+                    className="flex items-center gap-2 green-button"
+                    disabled={createFAQ.isPending || newFAQItems.length === 0}
+                  >
+                    {createFAQ.isPending ? (
+                      <LoadingSpinner />
+                    ) : (
+                      <SaveIcon className="w-4 h-4" />
+                    )}
+                    Create FAQ Section with {newFAQItems.length} Question(s)
+                  </CustomButton>
+                  <CustomButton
+                    type="button"
+                    onClick={handleCancelCreate}
+                  >
+                    Cancel
+                  </CustomButton>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Edit FAQ Section (existing FAQ) */}
+      {isEditing && editingFAQ && (
         <Card className="border-blue-200">
           <CardHeader>
             <CardTitle>
-              {editingFAQ ? 'Edit FAQ Section' : 'Create New FAQ Section'}
+              Edit FAQ Section
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -380,14 +617,14 @@ function FAQManagement() {
                   <CustomButton
                     type="submit"
                     className="flex items-center gap-2 green-button"
-                    disabled={createFAQ.isPending || updateFAQ.isPending}
+                    disabled={updateFAQ.isPending}
                   >
-                    {(createFAQ.isPending || updateFAQ.isPending) ? (
+                    {updateFAQ.isPending ? (
                       <LoadingSpinner />
                     ) : (
                       <SaveIcon className="w-4 h-4" />
                     )}
-                    {editingFAQ ? 'Update FAQ Section' : 'Create FAQ Section'}
+                    Update FAQ Section
                   </CustomButton>
                   <CustomButton
                     type="button"
@@ -407,9 +644,6 @@ function FAQManagement() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">
-                {activeFAQType ? `Manage ${formatFAQType(activeFAQType)} FAQs` : 'Manage FAQs'}
-              </h3>
               <CustomButton
                 onClick={handleCreateNewFAQ}
                 className="flex items-center gap-2"
@@ -422,7 +656,7 @@ function FAQManagement() {
         </Card>
       )}
 
-      {/* Add/Edit FAQ Item Form */}
+      {/* Add/Edit FAQ Item Form (for existing FAQs) */}
       {editingItem?.type === 'faqItem' && (
         <Card className="border-green-200">
           <CardHeader>
@@ -556,35 +790,46 @@ function FAQManagement() {
                 </div>
               </CardHeader>
               <CardContent>
+                {/* Questions are now always visible */}
                 <div className="space-y-4">
-                  {faq.faqItems?.map((item, index) => (
-                    <div key={item.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-lg text-white">
-                            {item.question}
-                          </h4>
-                          <p className="text-white mt-2 whitespace-pre-wrap">
-                            {item.answer}
-                          </p>
-                        </div>
-                        {isEditing && (
-                          <div className="flex gap-2 ml-4">
-                            <CustomButton
-                              onClick={() => startEditingItem(faq.id, index, item)}
-                            >
-                              Edit
-                            </CustomButton>
-                            <CustomButton
-                              onClick={() => openDeleteConfirm('faqItem', faq.id, item.id, index)}
-                            >
-                              <TrashIcon className="w-4 h-4" />
-                            </CustomButton>
+                  {faq.faqItems && faq.faqItems.length > 0 ? (
+                    faq.faqItems.map((item, index) => (
+                      <div key={item.id} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-3">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-lg text-white">
+                              {item.question}
+                            </h4>
+                            <p className="text-white mt-2 whitespace-pre-wrap">
+                              {item.answer}
+                            </p>
                           </div>
-                        )}
+                          {isEditing && (
+                            <div className="flex gap-2 ml-4">
+                              <CustomButton
+                                onClick={() => startEditingItem(faq.id, index, item)}
+                              >
+                                Edit
+                              </CustomButton>
+                              <CustomButton
+                                onClick={() => openDeleteConfirm('faqItem', faq.id, item.id, index)}
+                              >
+                                <TrashIcon className="w-4 h-4" />
+                              </CustomButton>
+                            </div>
+                          )}
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 border-2 border-dashed rounded-lg">
+                      <HelpIcon className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                      <p className="text-gray-500">
+                        No questions in this FAQ section yet.
+                        {isEditing && " Click 'Add Question' to add some."}
+                      </p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -607,7 +852,7 @@ function FAQManagement() {
         }
         Icon={TrashIcon}
         onCancel={() => {
-          setOpenDeleteDialog(false);
+          setOpenDialog(false);
           setItemToDelete(null);
         }}
         onConfirm={handleDeleteItem}

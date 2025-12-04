@@ -55,7 +55,12 @@ function SeekerForm({ open, handleOpen }: Props) {
   const createSeeker = useCreateSeeker();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createSeeker.mutate(values, {
+    createSeeker.mutate({
+      ...values,
+      mobile: values.mobile || "",
+      address: values.address || "",
+      gender: values.gender || "",
+    }, {
       onSuccess: () => {
         handleOpen();
         form.reset({

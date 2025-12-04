@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { FiPlus as PlusIcon } from "react-icons/fi";
 import { TiTick as CompleteIcon } from "react-icons/ti";
 import { Trash as DeleteIcon } from "lucide-react";
-
 import {
   LoadingSpinner,
   PageLoadingSpinner,
@@ -185,6 +184,10 @@ function BookingDetails() {
             <div>{formatDate(booking?.cancelledAt)}</div>
           </div>
         )}
+            <div className="input-container mb-[0.4rem]">
+          <label>Careseeker Name </label>
+          <div>{booking?.user?.name}</div>
+        </div>
 
         <div className="input-container mb-[0.4rem]">
           <label>Careseeker email </label>
@@ -228,7 +231,7 @@ function BookingDetails() {
                           type="date"
                           placeholder="Enter appointment date"
                           {...field}
-                          className=" !w-full date-input input"
+                          className=" !w-1/2 date-input input"
                         />
                       </FormControl>
                       <FormMessage />
@@ -249,7 +252,7 @@ function BookingDetails() {
                           type="date"
                           placeholder="Enter end date"
                           {...field}
-                          className=" !w-full date-input input"
+                          className=" !w-1/2 date-input input"
                         />
                       </FormControl>
                       <FormMessage />
@@ -269,7 +272,7 @@ function BookingDetails() {
                           type="date"
                           placeholder="Enter meeting date"
                           {...field}
-                          className=" !w-full date-input input"
+                          className=" !w-1/2 date-input input"
                         />
                       </FormControl>
                       <FormMessage />

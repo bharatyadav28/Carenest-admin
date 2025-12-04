@@ -187,8 +187,24 @@ td {
   position: absolute;
   right: 8px;
   cursor: pointer;
+  filter: invert(1); /* This makes the icon white */
+  opacity: 0.8; /* Optional: adjust transparency */
+}
+
+/* If you want to adjust on hover/focus */
+.date-input::-webkit-calendar-picker-indicator:hover {
+  filter: invert(1) brightness(1.2);
+  opacity: 1;
 }
 
 .date-input {
   position: relative;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: white;
+  -webkit-box-shadow: 0 0 0px 1000px inherit inset;
+  transition: background-color 5000s ease-in-out 0s;
 }

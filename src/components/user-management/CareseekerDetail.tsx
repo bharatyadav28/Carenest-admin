@@ -7,6 +7,7 @@ import {
   
   PageLoadingSpinner,
 } from "@/components/LoadingSpinner";import { EmptyTable } from "@/components/common/EmptyTable";
+import { cdnURL } from "../../lib/resuable-data";
 
 function CareseekerDetail() {
   const { id } = useParams<{ id: string }>();
@@ -37,7 +38,7 @@ function CareseekerDetail() {
                   <div className="relative">
                     <div className="w-32 h-32 rounded-full p-1 bg-gradient-primary">
                       <img
-                        src={user.avatar || "https://i.pravatar.cc/150?img=5"}
+                        src={`${cdnURL}${user.avatar || "https://i.pravatar.cc/150?img=5"}`}
                         alt={`${user.name} avatar`}
                         className="w-full h-full rounded-full object-cover"
                       />
@@ -62,28 +63,28 @@ function CareseekerDetail() {
 
                   {/* Contact Info Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex items-center gap-3 font-bold text-primary">
-                      ID
+                    <div className="flex items-center gap-3 font-bold text-white">
+                      ID :-
                       <span className="text-muted-foreground">{user.id}</span>
                     </div>
-                    <div className="flex items-center gap-3 text-primary font-bold">
-                      E-Mail
+                    <div className="flex items-center gap-3 text-white font-bold">
+                      E-Mail :-
                       <span className="text-muted-foreground">{user.email}</span>
                     </div>
-                    <div className="flex items-center gap-3 font-bold text-primary">
-                      Phone
+                    <div className="flex items-center gap-3 font-bold text-white">
+                      Phone  :-
                       <span className="text-muted-foreground">{user.mobile}</span>
                     </div>
-                    <div className="flex items-center gap-3 font-bold text-primary">
-                      Address
+                    <div className="flex items-center gap-3 font-bold text-white">
+                      Address :-
                       <span className="text-muted-foreground">{user.address}</span>
                     </div>
-                    <div className="flex items-center gap-3 text-muted-foreground">
-                      <span className="font-bold text-primary">Zipcode</span>
+                    <div className="flex items-center gap-3 text-muted-foreground font-bold">
+                      <span className="font-bold text-white">Zipcode :-</span>
                       <span>{user.zipcode}</span>
                     </div>
-                    <div className="flex items-center gap-3 text-muted-foreground">
-                      <span className="font-bold text-primary">Gender</span>
+                    <div className="flex items-center gap-3 text-muted-foreground font-bold">
+                      <span className="font-bold text-white">Gender :-</span>
                       <span className="capitalize">{user.gender || "N/A"}</span>
                     </div>
                   </div>

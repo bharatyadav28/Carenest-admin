@@ -79,7 +79,7 @@ export const CustomInput = ({
   className,
   ...props
 }: InputProps) => {
-  const classes = `resize-none border-gray-400 py-5  ${className}`;
+  const classes = `resize-none border-gray-400 py-5   ${className}`;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (maxChars && event.target.value?.length > maxChars) {

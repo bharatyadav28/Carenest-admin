@@ -25,7 +25,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { CustomButton } from "@/components/common/CustomInputs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 import TextEditor from "@/components/common/RichTextEditor";
 
@@ -122,7 +122,7 @@ function PolicyManagement() {
         <CardHeader>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <CardTitle>{pageTitleMap[activePolicyType]}</CardTitle>
+              {/* <CardTitle>{pageTitleMap[activePolicyType]}</CardTitle> */}
 
             </div>
 

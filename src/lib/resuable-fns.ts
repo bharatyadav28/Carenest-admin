@@ -81,6 +81,11 @@ export const convertToDate = (
 export const convertToPascalCase = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
+// Add this function to your resuable-fns.ts
+export const formatDateForGrouping = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toISOString().split('T')[0]; // Returns "YYYY-MM-DD"
+};
 
 export function formatTo12Hour(timeInput: string) {
   const date = new Date(timeInput);

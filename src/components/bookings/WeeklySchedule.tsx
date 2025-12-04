@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import {
   Table,
   TableBody,
@@ -26,6 +25,7 @@ function WeeklySchedule({ weeklySchedule, bookingId }: Props) {
   const [openForm, setOpenForm] = useState(false);
   const [selectedSchedule, setSelectedSchedule] =
     useState<weeklyScheduleType | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const deleteWeeklySchedule = useDeleteWeeklySchedule();
 
@@ -39,7 +39,20 @@ function WeeklySchedule({ weeklySchedule, bookingId }: Props) {
 
   const handleDeleteSchedule = (scheduleId: string | undefined) => {
     if (!scheduleId) return;
-    if (bookingId) deleteWeeklySchedule.mutate({ bookingId, scheduleId });
+    
+    setDeletingId(scheduleId); // Track which schedule is being deleted
+    
+    if (bookingId) {
+      deleteWeeklySchedule.mutate(
+        { bookingId, scheduleId },
+        {
+          onSettled: () => {
+            // Clear the deleting state when mutation completes (success or error)
+            setDeletingId(null);
+          },
+        }
+      );
+    }
   };
 
   const sortedSchedule = weeklySchedule?.sort(
@@ -53,7 +66,6 @@ function WeeklySchedule({ weeklySchedule, bookingId }: Props) {
           <label>
             <div className="flex gap-2 items-center">
               <div> Weekly Schedule</div>
-
               <AddButton
                 onClick={() => {
                   handleOpenForm();
@@ -71,15 +83,14 @@ function WeeklySchedule({ weeklySchedule, bookingId }: Props) {
                   <TableHead>Week Day</TableHead>
                   <TableHead>Start Time</TableHead>
                   <TableHead>End Time</TableHead>
-
                   <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
-                {false && <TableLoader colSpan={7} />}
+                {false && <TableLoader colSpan={4} />}
                 {sortedSchedule?.length === 0 && (
-                  <EmptyTable colSpan={7} text="No schedule exists" />
+                  <EmptyTable colSpan={4} text="No schedule exists" />
                 )}
 
                 {sortedSchedule?.length! > 0 &&
@@ -91,7 +102,7 @@ function WeeklySchedule({ weeklySchedule, bookingId }: Props) {
                       <TableCell>{schedule.startTime}</TableCell>
                       <TableCell>{schedule.endTime}</TableCell>
                       <TableCell>
-                        <div className="flex">
+                        <div className="flex gap-2">
                           <UpdateButton
                             onClick={() => {
                               setSelectedSchedule(schedule);
@@ -100,7 +111,7 @@ function WeeklySchedule({ weeklySchedule, bookingId }: Props) {
                           />
                           <DeleteButton
                             onClick={() => handleDeleteSchedule(schedule.id)}
-                            isDeleting={deleteWeeklySchedule?.isPending}
+                            isDeleting={deletingId === schedule.id && deleteWeeklySchedule?.isPending}
                           />
                         </div>
                       </TableCell>

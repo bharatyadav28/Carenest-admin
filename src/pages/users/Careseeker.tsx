@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { SearchIcon, ArrowUpDown } from "lucide-react"; // ⬅ added icon
+import { SearchIcon, ArrowUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import EditForm from "@/components/user-management/Editform";
 import {
@@ -29,6 +29,7 @@ import { EmptyTable } from "@/components/common/EmptyTable";
 import { DeleteDialog } from "@/components/common/CustomDialog";
 import { showError } from "@/lib/resuable-fns";
 import SeekerForm from "../../components/user-management/SeekerForm";
+import { Tooltip } from "@/components/common/Tooltip"; // Add Tooltip import
 
 // Booking filter options
 const bookingFilterMenu = [
@@ -52,7 +53,8 @@ function Careseeker() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc"); // 🔽 sorting state
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null); // Track which user is being deleted
 
   const filters = useMemo(
     () => ({
@@ -86,10 +88,18 @@ function Careseeker() {
 
   const handleDeleteUser = () => {
     if (!selectedUserId) return;
+    
+    // Set the deleting user ID before mutation
+    setDeletingUserId(selectedUserId);
+    
     deleteCareSeeker.mutate(selectedUserId, {
       onSuccess: () => {
         setSelectedUserId(null);
+        setDeletingUserId(null); // Clear deleting state
         handleDeleteDialog();
+      },
+      onError: () => {
+        setDeletingUserId(null); // Clear deleting state on error
       },
     });
   };
@@ -229,15 +239,21 @@ function Careseeker() {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <ViewButton onClick={() => navigate(`/care-seeker/${user.id}`)} />
-                    <UpdateButton onClick={() => handleOpenEditForm(user.id)} />
-                    <DeleteButton
-                      onClick={() => {
-                        handleDeleteDialog();
-                        setSelectedUserId(user.id);
-                      }}
-                      isDeleting={deleteCareSeeker.isPending}
-                    />
+                    <Tooltip text="View">
+                      <ViewButton onClick={() => navigate(`/care-seeker/${user.id}`)} />
+                    </Tooltip>
+                    <Tooltip text="Edit">
+                      <UpdateButton onClick={() => handleOpenEditForm(user.id)} />
+                    </Tooltip>
+                    <Tooltip text="Delete">
+                      <DeleteButton
+                        onClick={() => {
+                          handleDeleteDialog();
+                          setSelectedUserId(user.id);
+                        }}
+                        isDeleting={deletingUserId === user.id && deleteCareSeeker.isPending}
+                      />
+                    </Tooltip>
                   </div>
                 </TableCell>
               </TableRow>
@@ -256,7 +272,7 @@ function Careseeker() {
           setSelectedUserId(null);
         }}
         onConfirm={handleDeleteUser}
-        isDeleting={deleteCareSeeker.isPending}
+        isDeleting={deleteCareSeeker.isPending && deletingUserId === selectedUserId}
       />
 
       {/* Pagination */}
@@ -274,7 +290,7 @@ function Careseeker() {
           open={openEditForm}
           handleOpen={handleCloseEditForm}
           userId={selectedUserId}
-          role="giver"
+          role="seeker" // Changed from "giver" to "seeker"
         />
       )}
     </div>

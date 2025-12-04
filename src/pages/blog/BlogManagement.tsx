@@ -10,7 +10,7 @@ import {
   FiEye as ViewIcon,
   FiCalendar,
   FiUser,
-  FiSearch,
+  // FiSearch,
   FiChevronLeft,
   FiChevronRight,
   FiX as CloseIcon
@@ -213,9 +213,9 @@ function BlogManagement() {
     setFilters(prev => ({ ...prev, page: newPage }));
   };
 
-  const handleSearch = (searchTerm: string) => {
-    setFilters(prev => ({ ...prev, search: searchTerm, page: 1 }));
-  };
+  // const handleSearch = (searchTerm: string) => {
+  //   setFilters(prev => ({ ...prev, search: searchTerm, page: 1 }));
+  // };
 
   const handleSortChange = (sort_by: string, order: "asc" | "desc") => {
     setFilters(prev => ({ ...prev, sort_by, order }));
@@ -475,7 +475,7 @@ function BlogManagement() {
               
               {/* Search and Filters */}
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                <div className="relative">
+                {/* <div className="relative">
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <Input
                     placeholder="Search blogs..."
@@ -483,7 +483,7 @@ function BlogManagement() {
                     value={filters.search}
                     onChange={(e) => handleSearch(e.target.value)}
                   />
-                </div>
+                </div> */}
                 
                 <Select
                   value={`${filters.sort_by}-${filters.order}`}

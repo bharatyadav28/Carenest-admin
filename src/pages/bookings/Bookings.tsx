@@ -29,6 +29,7 @@ import {
   DeleteButton,
   UpdateButton,
 } from "@/components/common/CustomInputs";
+import { Tooltip } from "@/components/common/Tooltip";
 
 function Bookings() {
   const [search, setSearch] = useState("");
@@ -112,7 +113,7 @@ function Bookings() {
             <CustomInput
               text={search}
               setText={setSearch}
-              className="py-5 border-none focus-visible:ring-0 !bg-inherit w-full"
+              className="py-5 border-none focus-visible:ring-0 !bg-inherit  w-full"
               placeholder="Search by name or email"
             />
           </div>
@@ -172,7 +173,7 @@ function Bookings() {
           <TableHeader>
             <TableRow>
               <TableHead>Booking Id</TableHead>
-              <TableHead>Careseeker</TableHead>
+              <TableHead>Careseeker Email Id</TableHead>
               <TableHead>Booked On</TableHead>
               <TableHead>Start Date</TableHead>
               <TableHead>End Date</TableHead>
@@ -201,14 +202,14 @@ function Bookings() {
                       className={
                         booking.status === "confirmed" ||
                         booking.status === "active"
-                          ? "text-green-600 text-xs font-medium"
+                          ? "text-green-600 text-sm font-medium"
                           : booking.status === "pending"
-                          ? "text-orange-600 text-xs font-medium"
+                          ? "text-yellow-600 text-sm font-medium"
                           : booking.status === "completed"
-                          ? "text-blue-600 text-xs font-medium"
-                          : booking.status === "cancel"
-                          ? "text-red-600 rounded-full text-xs font-medium"
-                          : "text-gray-600 rounded-full text-xs font-medium"
+                          ? "text-blue-600 text-sm font-medium"
+                          : booking.status === "cancelled"
+                          ? "text-red-600 rounded-full text-sm font-medium"
+                          : "text-green-800 rounded-full text-sm font-medium"
                       }
                     >
                       {convertToPascalCase(booking.status)}
@@ -216,17 +217,21 @@ function Bookings() {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
+                        <Tooltip text="Edit booking">
                       <UpdateButton
                         onClick={() => {
                           navigate(`/bookings/${booking.bookingId}`);
                         }}
                       />
+                      </Tooltip>
+                          <Tooltip text="Delete booking">
                       <DeleteButton
                         onClick={() => {
                           handleDeleteDialog();
                           setSelectedBooking(booking);
                         }}
                       />
+                      </Tooltip>
                     </div>
                   </TableCell>
                 </TableRow>

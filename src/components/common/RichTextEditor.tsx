@@ -1,4 +1,3 @@
-// TextEditor.tsx
 import JoditEditor from "jodit-react";
 
 interface Props {
@@ -16,13 +15,24 @@ const TextEditor = ({ value, onChange, readOnly = false, className, placeholder 
         value={value}
         onBlur={(newContent) => onChange(newContent)}
         config={{
-          readonly: readOnly, // This controls the read-only state
+          readonly: readOnly,
           height: 380,
           style: {
             background: "#2d2d2d",
             color: "#ffffff",
           },
           placeholder: placeholder || "Start typing...",
+
+          // CLEAN PASTE — remove background/formatting
+          defaultActionOnPaste: "insert_clear_html",
+          askBeforePasteHTML: false,
+          askBeforePasteFromWord: false,
+
+          // remove background color/styles from content
+          cleanHTML: {
+            fillEmptyParagraph: false,
+            replaceNBSP: true,
+          },
         }}
       />
     </div>
