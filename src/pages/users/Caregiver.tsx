@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { SearchIcon, ArrowUpDown } from "lucide-react";
+import { SearchIcon, ArrowUpDown, Check, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -45,7 +45,7 @@ function Caregiver() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [openEditForm, setOpenEditForm] = useState(false);
   const [openAddGiver, setOpenAddGiver] = useState(false);
-  const [deletingUserId, setDeletingUserId] = useState<string | null>(null); // Track which user is being deleted
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null); 
 
   // Sorting state
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -240,6 +240,8 @@ function Caregiver() {
               </div>
             </TableHead>
             <TableHead>ZipCode</TableHead>
+            {/* ADDED: Subscription Column */}
+            <TableHead>Subscription</TableHead>
             {/* Status with dropdown filter */}
             <TableHead>
               <div className="flex items-center justify-between gap-4 ">
@@ -251,9 +253,9 @@ function Caregiver() {
         </TableHeader>
 
         <TableBody>
-          {isFetching && <TableLoader colSpan={7} />}
+          {isFetching && <TableLoader colSpan={8} />} 
           {!isFetching && noUsers && (
-            <EmptyTable colSpan={7} text="No givers found" />
+            <EmptyTable colSpan={8} text="No givers found" /> 
           )}
           {!isFetching &&
             !noUsers &&
@@ -264,6 +266,22 @@ function Caregiver() {
                 <TableCell>{user.mobile}</TableCell>
                 <TableCell>{user.gender || "N/A"}</TableCell>
                 <TableCell>{user.zipcode || "N/A"}</TableCell>
+                {/* ADDED: Subscription cell */}
+                <TableCell>
+                  <div className="flex items-center gap-1">
+                    {user.hasSubscription ? (
+                      <>
+                        <Check size={16} className="text-green-500" />
+                        <span className="text-green-500 font-medium">Subscribed</span>
+                      </>
+                    ) : (
+                      <>
+                        <X size={16} className="text-red-500" />
+                        <span className="text-red-500 font-medium">Not Subscribed</span>
+                      </>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell>
                   <span
                     className={`${

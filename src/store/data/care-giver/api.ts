@@ -36,6 +36,7 @@ export interface CareGiverCreateType {
   address: string;
   zipcode: string | number;
   gender: string;
+  
   role: "giver";
 }
 

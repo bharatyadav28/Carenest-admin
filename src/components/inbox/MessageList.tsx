@@ -139,7 +139,11 @@ function MessageList({ handleOpenMessages }: Props) {
                 <div className="flex flex-col gap-1">
                   <div className="font-semibold">{chat.toUser.name}</div>
                   <div className="text-sm text-[var(--cool-gray)]">
-                    {chat?.lastMessage?.message || "No messages yet"}
+                  {chat?.lastMessage?.message 
+    ? (chat.lastMessage.message.length > 20 
+        ? `${chat.lastMessage.message.substring(0, 20)}...`
+        : chat.lastMessage.message)
+    : "No messages yet"}
                   </div>
                 </div>
               </div>
