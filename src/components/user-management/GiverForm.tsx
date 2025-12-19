@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Updated schema with all fields required
+// Updated schema with all fields required including city
 export const formSchema = z.object({
   name: z.string()
     .min(3, "Name must be at least 3 characters")
@@ -47,6 +47,11 @@ export const formSchema = z.object({
     .max(500, "Address must be less than 500 characters")
     .nonempty("Address is required"),
   
+  city: z.string()
+    .min(2, "City must be at least 2 characters")
+    .max(100, "City must be less than 100 characters")
+    .nonempty("City is required"),
+  
   zipcode: z.string()
     .min(5, "Zipcode must be at least 5 characters")
     .max(10, "Zipcode must be less than 10 characters")
@@ -65,6 +70,7 @@ const initialFormValues = {
   email: "",
   mobile: "",
   address: "",
+  city: "",
   zipcode: "",
   gender: "",
 };
@@ -169,6 +175,25 @@ function GiverForm({ open, handleOpen }: Props) {
                       placeholder="Enter caregiver address"
                       {...field}
                       className={form.formState.errors.address ? "border-red-500" : ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="required">City</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter caregiver city"
+                      {...field}
+                      className={form.formState.errors.city ? "border-red-500" : ""}
                     />
                   </FormControl>
                   <FormMessage />

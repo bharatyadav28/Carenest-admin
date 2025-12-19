@@ -53,10 +53,12 @@ function CaregiverDetail() {
                       <Badge variant="secondary" className="bg-primary/10 text-blue-600 border-primary/20">
                         Caregiver
                       </Badge>
-                      <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
-                        <Shield className="w-3 h-3 mr-1 text-green-700" />
-                        <span className="text-green-600 font-bold"> Verified</span>
-                      </Badge>
+                      {user.verified && (
+                        <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
+                          <Shield className="w-3 h-3 mr-1 text-green-700" />
+                          <span className="text-green-600 font-bold"> Verified</span>
+                        </Badge>
+                      )}
                     </div>
                   </div>
 
@@ -72,11 +74,15 @@ function CaregiverDetail() {
                     </div>
                     <div className="flex items-center gap-3 font-bold text-white">
                       Phone :
-                      <span className="text-muted-foreground">{user.mobile}</span>
+                      <span className="text-muted-foreground">{user.mobile || "N/A"}</span>
                     </div>
                     <div className="flex items-center gap-3 font-semibold text-white">
                       Address:
-                      <span className="text-muted-foreground">{user.address}</span>
+                      <span className="text-muted-foreground">{user.address || "N/A"}</span>
+                    </div>
+                    <div className="flex items-center gap-3 font-semibold text-white">
+                      City:
+                      <span className="text-muted-foreground">{user.city || "N/A"}</span>
                     </div>
                   </div>
                 </div>
@@ -107,6 +113,11 @@ function CaregiverDetail() {
                 <div className="flex justify-between items-center py-2 border-b border-border/30">
                   <span className="text-white font-bold">Zipcode</span>
                   <span className="text-foreground capitalize">{user.zipcode || "N/A"}</span>
+                </div>
+
+                <div className="flex justify-between items-center py-2 border-b border-border/30">
+                  <span className="text-white font-bold">City</span>
+                  <span className="text-foreground capitalize">{user.city || "N/A"}</span>
                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-border/30">

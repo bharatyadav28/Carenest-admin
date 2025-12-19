@@ -4,17 +4,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useParams } from "react-router-dom";
 import { useCareSeekerById } from "@/store/data/care-seeker/hook";
 import {
-  
   PageLoadingSpinner,
-} from "@/components/LoadingSpinner";import { EmptyTable } from "@/components/common/EmptyTable";
+} from "@/components/LoadingSpinner";
+import { EmptyTable } from "@/components/common/EmptyTable";
 import { cdnURL } from "../../lib/resuable-data";
 
 function CareseekerDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: userData, isLoading: isUserLoading, error: userError } = useCareSeekerById(id || "");
 
-  const user = userData?.data?.user?.[0];
-
+  // Fix: Access user directly as object instead of array
+  const user = userData?.data?.user;
 
   if (isUserLoading) return <PageLoadingSpinner />;
   if (userError) return <div className="text-red-500">Failed to load user data</div>;
@@ -87,9 +87,13 @@ function CareseekerDetail() {
                       <span className="font-bold text-white">Gender :-</span>
                       <span className="capitalize">{user.gender || "N/A"}</span>
                     </div>
+                    {user.city && (
+                      <div className="flex items-center gap-3 text-muted-foreground font-bold">
+                        <span className="font-bold text-white">City :-</span>
+                        <span>{user.city}</span>
+                      </div>
+                    )}
                   </div>
-
-             
                 </div>
               </div>
             </CardContent>

@@ -209,6 +209,7 @@ function Careseeker() {
             </TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Mobile no</TableHead>
+            <TableHead>City</TableHead>
             <TableHead>ZipCode</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Action</TableHead>
@@ -216,8 +217,8 @@ function Careseeker() {
         </TableHeader>
 
         <TableBody>
-          {isFetching && <TableLoader colSpan={6} />}
-          {!isFetching && noUsers && <EmptyTable colSpan={6} text="No users found" />}
+          {isFetching && <TableLoader colSpan={7} />}
+          {!isFetching && noUsers && <EmptyTable colSpan={7} text="No users found" />}
           {!isFetching &&
             !noUsers &&
             sortedUsers.map((user: any) => (
@@ -225,6 +226,7 @@ function Careseeker() {
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.mobile}</TableCell>
+                <TableCell>{user.city || "N/A"}</TableCell>
                 <TableCell>{user.zipcode || "N/A"}</TableCell>
                 <TableCell>
                   <span

@@ -8,7 +8,8 @@ import {
   FiClock as ClockIcon,
   FiUserCheck as UserCheckIcon,
   FiUsers as UsersIcon,
-  FiRefreshCw as RefreshIcon
+  FiRefreshCw as RefreshIcon,
+  FiUserPlus as UserPlusIcon
 } from "react-icons/fi";
 import {
   PageLoadingSpinner,
@@ -24,6 +25,27 @@ import {
   useUpdateApplicationStatus,
   useDeleteApplication,
 } from "@/store/data/cms/caregiverApplication/hook";
+import { useCreateGiver } from "@/store/data/users/hooks";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import CustomDrawer from "@/components/common/CustomDrawer";
 
 // Status options with colors
 const STATUS_OPTIONS = [
@@ -41,9 +63,251 @@ const REVIEWED_OPTIONS = [
   { value: "true", label: "Reviewed" },
 ];
 
-// Sort options
+// Giver Form Schema
+const giverFormSchema = z.object({
+  name: z.string()
+    .min(3, "Name must be at least 3 characters")
+    .max(255, "Name must be less than 255 characters")
+    .nonempty("Name is required"),
+  
+  email: z.string()
+    .email("Please enter a valid email address")
+    .max(255, "Email must be less than 255 characters")
+    .nonempty("Email is required"),
+  
+  mobile: z.string()
+    .min(10, "Mobile number must be at least 10 digits")
+    .max(15, "Mobile number must be less than 15 digits")
+    .regex(/^[0-9]+$/, "Mobile number must contain only digits")
+    .nonempty("Mobile number is required"),
+  
+  address: z.string()
+    .min(5, "Address must be at least 5 characters")
+    .max(500, "Address must be less than 500 characters")
+    .nonempty("Address is required"),
+  
+  city: z.string()
+    .min(2, "City must be at least 2 characters")
+    .max(100, "City must be less than 100 characters")
+    .nonempty("City is required"),
+  
+  zipcode: z.string()
+    .min(5, "Zipcode must be at least 5 characters")
+    .max(10, "Zipcode must be less than 10 characters")
+    .regex(/^[0-9]+$/, "Zipcode must contain only digits")
+    .nonempty("Zipcode is required"),
+  
+  gender: z.string()
+    .nonempty("Gender is required")
+    .refine((val) => ["Male", "Female", "Other"].includes(val), {
+      message: "Please select a valid gender",
+    }),
+});
 
+const initialGiverFormValues = {
+  name: "",
+  email: "",
+  mobile: "",
+  address: "",
+  city: "",
+  zipcode: "",
+  gender: "",
+};
 
+// Giver Form Component
+interface GiverFormProps {
+  open: boolean;
+  handleOpen: () => void;
+  applicationData?: any; // Optional: Pre-fill from application
+}
+
+function GiverForm({ open, handleOpen, applicationData }: GiverFormProps) {
+  const form = useForm<z.infer<typeof giverFormSchema>>({
+    resolver: zodResolver(giverFormSchema),
+    defaultValues: applicationData || initialGiverFormValues,
+    mode: "onChange",
+  });
+
+  const createGiver = useCreateGiver();
+
+  // Update form values when applicationData changes
+  useEffect(() => {
+    if (applicationData) {
+      form.reset(applicationData);
+    }
+  }, [applicationData, form]);
+
+  function onSubmit(values: z.infer<typeof giverFormSchema>) {
+    createGiver.mutate(values, {
+      onSuccess: () => {
+        handleOpen();
+        form.reset(initialGiverFormValues);
+      },
+    });
+  }
+
+  return (
+    <CustomDrawer
+      open={open}
+      handleOpen={handleOpen}
+      className="max-w-lg !mx-auto"
+    >
+      <div className="p-6 overflow-y-auto">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="required">Name</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter caregiver name" 
+                      {...field} 
+                      className={form.formState.errors.name ? "border-red-500" : ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="required">Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Enter caregiver email"
+                      {...field}
+                      className={form.formState.errors.email ? "border-red-500" : ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="mobile"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="required">Mobile</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="Enter caregiver mobile"
+                      {...field}
+                      className={form.formState.errors.mobile ? "border-red-500" : ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="required">Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter caregiver address"
+                      {...field}
+                      className={form.formState.errors.address ? "border-red-500" : ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="required">City</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter caregiver city"
+                      {...field}
+                      className={form.formState.errors.city ? "border-red-500" : ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="zipcode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="required">Zip Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter caregiver zip code"
+                      {...field}
+                      className={form.formState.errors.zipcode ? "border-red-500" : ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="required">Gender</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
+                    <FormControl>
+                      <SelectTrigger className={form.formState.errors.gender ? "border-red-500" : ""}>
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="Female">Female</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <CustomButton
+              type="submit"
+              className="green-button w-full mt-6"
+            >
+              {createGiver.isPending ? <LoadingSpinner /> : "Add Caregiver"}
+            </CustomButton>
+          </form>
+        </Form>
+      </div>
+    </CustomDrawer>
+  );
+}
+
+// Main Component
 function CaregiverApplicationManagement() {
   const [filters, setFilters] = useState({
     status: "",
@@ -59,14 +323,18 @@ function CaregiverApplicationManagement() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [applicationToDelete, setApplicationToDelete] = useState<string | null>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  
+  // Giver Form state
+  const [openGiverForm, setOpenGiverForm] = useState(false);
+  const [selectedApplicationForGiver, setSelectedApplicationForGiver] = useState<any>(null);
 
   const replacePageName = useGeneral((state) => state.replacePageName);
 
-  // Build query params properly - INCLUDING SEARCH
+  // Build query params properly
   const queryParams = {
     ...(filters.status && { status: filters.status }),
     ...(filters.is_reviewed !== "" && { is_reviewed: filters.is_reviewed }),
-    ...(filters.search && { search: filters.search }), // Add search parameter
+    ...(filters.search && { search: filters.search }),
     sort_by: filters.sort_by,
     order: filters.order,
     page: currentPage,
@@ -74,14 +342,11 @@ function CaregiverApplicationManagement() {
   };
 
   const { data: applicationsData, isFetching: isFetchingApplications, error, refetch } = useAllApplications(queryParams);
-
-//   const { data: statsData, isFetching: isFetchingStats } = useApplicationStats();
   const updateStatus = useUpdateApplicationStatus();
   const deleteApplication = useDeleteApplication();
 
   const applications = applicationsData?.data?.applications || [];
   const pagination = applicationsData?.data?.pagination;
-//   const stats = statsData?.data?.stats;
 
   useEffect(() => {
     replacePageName("Caregiver Applications");
@@ -102,13 +367,12 @@ function CaregiverApplicationManagement() {
 
   // Improved search with better debouncing and handling
   useEffect(() => {
-    // Don't trigger search on initial load or when search is empty and we have data
     if (isInitialLoad) return;
 
     const timeoutId = setTimeout(() => {
-      setCurrentPage(1); // Reset to first page when searching
+      setCurrentPage(1);
       refetch();
-    }, 500); // Wait 500ms after user stops typing
+    }, 500);
 
     return () => clearTimeout(timeoutId);
   }, [filters.search, refetch, isInitialLoad]);
@@ -117,7 +381,6 @@ function CaregiverApplicationManagement() {
   useEffect(() => {
     if (isInitialLoad) return;
 
-    // Trigger refetch when other filters change
     const timeoutId = setTimeout(() => {
       setCurrentPage(1);
       refetch();
@@ -128,7 +391,6 @@ function CaregiverApplicationManagement() {
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
-    // Don't reset page immediately for search - let the useEffect handle it
     if (key !== "search") {
       setCurrentPage(1);
     }
@@ -152,7 +414,6 @@ function CaregiverApplicationManagement() {
   const handleStatusUpdate = (applicationId: string, newStatus: string) => {
     const statusData: any = { status: newStatus };
     
-    // Automatically mark as reviewed when status changes from pending
     if (newStatus !== "pending") {
       statusData.isReviewed = true;
     }
@@ -187,6 +448,33 @@ function CaregiverApplicationManagement() {
   const handleBackToList = () => {
     setViewMode("list");
     setSelectedApplication(null);
+  };
+
+  const handleCreateGiverFromApplication = (application: any) => {
+    // Map application data to giver form structure
+    const giverFormData = {
+      name: application.fullName || "",
+      email: application.email || "",
+      mobile: application.phoneNumber || "",
+      address: application.address || "",
+      city: application.city || "", // You might need to extract city from address
+      zipcode: application.zipcode || "",
+      gender: application.gender ? 
+        application.gender.charAt(0).toUpperCase() + application.gender.slice(1) : "",
+    };
+    
+    setSelectedApplicationForGiver(giverFormData);
+    setOpenGiverForm(true);
+  };
+
+  const handleOpenGiverForm = () => {
+    setSelectedApplicationForGiver(initialGiverFormValues);
+    setOpenGiverForm(true);
+  };
+
+  const handleCloseGiverForm = () => {
+    setOpenGiverForm(false);
+    setSelectedApplicationForGiver(null);
   };
 
   const getStatusIcon = (status: string) => {
@@ -230,9 +518,15 @@ function CaregiverApplicationManagement() {
               ← Back to List
             </CustomButton>
           </div>
-          <div className="flex items-center gap-2">
-    
-          </div>
+          {/* <div className="flex items-center gap-2">
+            <CustomButton
+              onClick={() => handleCreateGiverFromApplication(selectedApplication)}
+              className="green-button flex items-center gap-2"
+            >
+              <UserPlusIcon className="w-4 h-4" />
+              Create Caregiver from Application
+            </CustomButton>
+          </div> */}
         </div>
 
         {/* Application Details */}
@@ -330,9 +624,27 @@ function CaregiverApplicationManagement() {
   // Main List View
   return (
     <div className="space-y-6 p-6">
-      {/* Header with Stats and Actions */}
-      <div className="flex justify-end items-center">
+      {/* Giver Form Drawer */}
+      <GiverForm 
+        open={openGiverForm} 
+        handleOpen={handleCloseGiverForm} 
+        applicationData={selectedApplicationForGiver}
+      />
+
+      {/* Header with Actions */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold">Caregiver Applications</h1>
+          <p className="text-gray-500">Manage caregiver applications and create new caregivers</p>
+        </div>
         <div className="flex gap-2">
+          {/* <CustomButton
+            onClick={handleOpenGiverForm}
+            className="green-button flex items-center gap-2"
+          >
+            <UserPlusIcon className="w-4 h-4" />
+            Create New Caregiver
+          </CustomButton> */}
           <CustomButton
             onClick={handleRefresh}
             className="flex items-center gap-2"
@@ -403,21 +715,6 @@ function CaregiverApplicationManagement() {
                 ))}
               </select>
             </div>
-
-            {/* Sort */}
-            {/* <div>
-              <select
-                value={filters.sort_by}
-                onChange={(e) => handleFilterChange("sort_by", e.target.value)}
-                className="w-full bg-card p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {SORT_OPTIONS.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div> */}
           </div>
         </CardContent>
       </Card>
@@ -429,12 +726,12 @@ function CaregiverApplicationManagement() {
             <CardTitle>
               Applications {pagination && `(${pagination.totalItems})`}
             </CardTitle>
-            {/* {isFetchingApplications && (
+            {isFetchingApplications && (
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <LoadingSpinner />
                 Loading...
               </div>
-            )} */}
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -484,9 +781,6 @@ function CaregiverApplicationManagement() {
                           <strong>Applied:</strong> {new Date(application.createdAt).toLocaleDateString()}
                         </div>
                       </div>
-                      {/* <p className="text-sm text-white mt-2 line-clamp-2">
-                        {application.description}
-                      </p> */}
                     </div>
                     <div className="flex gap-2 ml-4">
                       <CustomButton
@@ -495,6 +789,13 @@ function CaregiverApplicationManagement() {
                       >
                         <EyeIcon className="w-4 h-4" />
                         View
+                      </CustomButton>
+                      <CustomButton
+                        onClick={() => handleCreateGiverFromApplication(application)}
+                        className="green-button flex items-center gap-2"
+                      >
+                        <UserPlusIcon className="w-4 h-4" />
+                        Create Giver
                       </CustomButton>
                       <CustomButton
                         onClick={() => handleDeleteApplication(application.id)}

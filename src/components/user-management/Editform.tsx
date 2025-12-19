@@ -32,6 +32,7 @@ export const formSchema = z.object({
   email: z.string().email().max(255),
   mobile: z.string().max(15).optional(),
   address: z.string().optional(),
+  city: z.string().optional(),
   zipcode: z.string(),
   gender: z.string().max(255).optional(),
 });
@@ -41,6 +42,7 @@ const initialFormValues = {
   email: "",
   mobile: "",
   address: "",
+  city: "",
   zipcode: "",
   gender: "",
 };
@@ -54,34 +56,43 @@ interface Props {
 
 function EditForm({ open, handleOpen, userId, role }: Props) {
   const { data: seekerData, isFetching: isFetchingSeeker } = useCareSeekerById(userId);
-
   const updateSeeker = useUpdateCareSeeker();
 
-  const userData = seekerData;
-  const isFetching =  isFetchingSeeker;
-  const updateUser =updateSeeker;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialFormValues,
   });
 
-  // Load current user data
+  // Load current user data - FIXED: Based on your API response
   useEffect(() => {
-    const user = userData?.data?.user?.[0];
+    // Your API returns: data.user (object, not array)
+    const user = seekerData?.data?.user;
+    
     if (user) {
+      console.log("Setting form with user data:", user); // Debug log
+      
       form.reset({
         name: user.name ?? "",
         email: user.email ?? "",
         mobile: user.mobile ?? "",
         address: user.address ?? "",
+        city: user.city ?? "",
         zipcode: user.zipcode?.toString() ?? "",
         gender: user.gender ?? "",
       });
+    } else {
+      // Debug: Check what data is actually coming
+      console.log("Seeker Data:", seekerData);
+      console.log("User data path check:", {
+        hasData: !!seekerData?.data,
+        hasUser: !!seekerData?.data?.user,
+        user: seekerData?.data?.user
+      });
     }
-  }, [userData, form]);
+  }, [seekerData, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    updateUser.mutate(
+    updateSeeker.mutate(
       { userId, updatedUser: values },
       {
         onSuccess: () => {
@@ -94,14 +105,15 @@ function EditForm({ open, handleOpen, userId, role }: Props) {
   return (
     <CustomDrawer open={open} handleOpen={handleOpen} className="max-w-lg !mx-auto">
       <div className="p-6">
-        {isFetching ? (
+        {isFetchingSeeker ? (
           <div className="flex justify-center">
             <LoadingSpinner />
           </div>
         ) : (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              {["name", "email", "mobile", "address", "zipcode"].map((field) => (
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+              {/* Map through form fields including city */}
+              {["name", "email", "mobile", "address", "city", "zipcode"].map((field) => (
                 <FormField
                   key={field}
                   control={form.control}
@@ -131,8 +143,7 @@ function EditForm({ open, handleOpen, userId, role }: Props) {
                     <FormLabel>Gender</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
+                      value={field.value || ""}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -153,9 +164,9 @@ function EditForm({ open, handleOpen, userId, role }: Props) {
               <CustomButton
                 type="submit"
                 className="green-button w-full"
-                disabled={updateUser.isPending}
+                disabled={updateSeeker.isPending}
               >
-                {updateUser.isPending ? (
+                {updateSeeker.isPending ? (
                   <LoadingSpinner />
                 ) : role === "giver" ? (
                   "Update Caregiver"

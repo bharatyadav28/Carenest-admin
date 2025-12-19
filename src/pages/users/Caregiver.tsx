@@ -220,7 +220,7 @@ function Caregiver() {
             </TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Mobile no</TableHead>
-
+            {/* <TableHead>City</TableHead> */}
             {/* Gender with dropdown filter */}
             <TableHead>
               <div className="flex items-center justify-between gap-4 ">
@@ -253,9 +253,9 @@ function Caregiver() {
         </TableHeader>
 
         <TableBody>
-          {isFetching && <TableLoader colSpan={8} />} 
+          {isFetching && <TableLoader colSpan={9} />} 
           {!isFetching && noUsers && (
-            <EmptyTable colSpan={8} text="No givers found" /> 
+            <EmptyTable colSpan={9} text="No givers found" /> 
           )}
           {!isFetching &&
             !noUsers &&
@@ -264,6 +264,7 @@ function Caregiver() {
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.mobile}</TableCell>
+                {/* <TableCell>{user.city || "N/A"}</TableCell> */}
                 <TableCell>{user.gender || "N/A"}</TableCell>
                 <TableCell>{user.zipcode || "N/A"}</TableCell>
                 {/* ADDED: Subscription cell */}

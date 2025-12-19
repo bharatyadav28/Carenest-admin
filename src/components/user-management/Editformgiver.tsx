@@ -34,6 +34,7 @@ export const formSchema = z.object({
   email: z.string().email().max(255),
   mobile: z.string().max(15).optional(),
   address: z.string().optional(),
+  city: z.string().optional(),
   zipcode: z.string(),
   gender: z.string().max(255).optional(),
 });
@@ -43,6 +44,7 @@ const initialFormValues = {
   email: "",
   mobile: "",
   address: "",
+  city: "",
   zipcode: "",
   gender: "",
 };
@@ -76,6 +78,7 @@ function EditFormgiver({ open, handleOpen, userId, role }: Props) {
         email: user.email ?? "",
         mobile: user.mobile ?? "",
         address: user.address ?? "",
+        city: user.city ?? "",
         zipcode: user.zipcode?.toString() ?? "",
         gender: user.gender ?? "", // Keep original case
       });
@@ -102,9 +105,9 @@ function EditFormgiver({ open, handleOpen, userId, role }: Props) {
           </div>
         ) : (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              {/* Regular input fields */}
-              {["name", "email", "mobile", "address", "zipcode"].map((field) => (
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+              {/* Regular input fields including city */}
+              {["name", "email", "mobile", "address", "city", "zipcode"].map((field) => (
                 <FormField
                   key={field}
                   control={form.control}
