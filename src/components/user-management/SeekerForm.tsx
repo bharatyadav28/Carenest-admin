@@ -28,6 +28,7 @@ export const formSchema = z.object({
   email: z.string().email().max(255),
   mobile: z.string().max(15).optional(),
   address: z.string().optional(),
+  city: z.string().optional(), // Added city to schema
   zipcode: z.string(),
   gender: z.string().max(255).optional(),
 });
@@ -37,6 +38,7 @@ const initialFormValues = {
   email: "",
   mobile: "",
   address: "",
+  city: "", // Added city to initial values
   zipcode: "",
   gender: "",
 };
@@ -59,6 +61,7 @@ function SeekerForm({ open, handleOpen }: Props) {
       ...values,
       mobile: values.mobile || "",
       address: values.address || "",
+      city: values.city || "", // Ensure city is included
       gender: values.gender || "",
     }, {
       onSuccess: () => {
@@ -143,6 +146,25 @@ function SeekerForm({ open, handleOpen }: Props) {
                     <Input
                       type="text"
                       placeholder="Enter careseeker address"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* City */}
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>City</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter careseeker city"
                       {...field}
                     />
                   </FormControl>
