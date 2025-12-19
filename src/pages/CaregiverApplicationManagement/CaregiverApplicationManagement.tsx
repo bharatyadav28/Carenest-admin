@@ -467,10 +467,10 @@ function CaregiverApplicationManagement() {
     setOpenGiverForm(true);
   };
 
-  const handleOpenGiverForm = () => {
-    setSelectedApplicationForGiver(initialGiverFormValues);
-    setOpenGiverForm(true);
-  };
+  // const handleOpenGiverForm = () => {
+  //   setSelectedApplicationForGiver(initialGiverFormValues);
+  //   setOpenGiverForm(true);
+  // };
 
   const handleCloseGiverForm = () => {
     setOpenGiverForm(false);
