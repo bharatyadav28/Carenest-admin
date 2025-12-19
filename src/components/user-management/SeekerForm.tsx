@@ -79,9 +79,9 @@ function SeekerForm({ open, handleOpen }: Props) {
       handleOpen={handleOpen}
       className="max-w-lg !mx-auto"
     >
-      <div className="p-8">
+      <div className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             {/* Name */}
             <FormField
               control={form.control}
