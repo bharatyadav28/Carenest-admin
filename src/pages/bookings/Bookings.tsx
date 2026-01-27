@@ -129,7 +129,7 @@ function Bookings() {
           <div className="flex items-center px-2 gap-2 md:w-max w-full  bg-inherit border border-gray-400 rounded-md  py-[0.6rem]">
             <div className="text-sm ">Booked </div>
             <input
-              className="w-full bg-inherit  border-none rounded-md  text-sm !m-0"
+               className="w-full bg-inherit border-none rounded-md text-sm !m-0 text-white [color-scheme:dark]"
               type="date"
               placeholder="filter by Booked Date"
               value={bookedOn}
@@ -143,8 +143,8 @@ function Bookings() {
           <div className="flex items-center px-2 gap-2 md:w-max w-full  bg-inherit border border-gray-400 rounded-md  py-[0.6rem]">
             <div className="text-sm whitespace-nowrap">Start date </div>
             <input
-              className="w-full bg-inherit  border-none rounded-md  text-sm !m-0"
-              type="date"
+  className="w-full bg-inherit border-none rounded-md text-sm !m-0 text-white [color-scheme:dark]"     
+           type="date"
               placeholder="filter by Start Date"
               value={appointmentDate}
               onChange={(e) => {
@@ -157,7 +157,7 @@ function Bookings() {
           <div className="flex items-center px-2 gap-2 md:w-max w-full  bg-inherit border border-gray-400 rounded-md  py-[0.6rem]">
             <div className="text-sm whitespace-nowrap">End date </div>
             <input
-              className="w-full bg-inherit  border-none rounded-md  text-sm !m-0"
+               className="w-full bg-inherit border-none rounded-md text-sm !m-0 text-white [color-scheme:dark]"
               type="date"
               placeholder="filter by End Date"
               value={endDate}
@@ -209,7 +209,7 @@ function Bookings() {
                           ? "text-blue-600 text-sm font-medium"
                           : booking.status === "cancelled"
                           ? "text-red-600 rounded-full text-sm font-medium"
-                          : "text-green-800 rounded-full text-sm font-medium"
+                          : "text-green-400 rounded-full text-sm font-medium"
                       }
                     >
                       {convertToPascalCase(booking.status)}

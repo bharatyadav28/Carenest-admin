@@ -6,8 +6,12 @@ import {
   fetchCareGiverBookings,
   updateCareGiver,
   deleteCareGiver,
+  sendBulkEmail,
+  bulkUploadUsers,
   CareGiverFiltersType,
   CareGiverCreateType,
+  BulkEmailRequestType,
+  BulkUploadResponseType,
 } from "./api";
 import { showError } from "@/lib/resuable-fns";
 
@@ -35,8 +39,6 @@ export const useCareGiverBookings = (userId: string) => {
   });
 };
 
-
-
 // Update caregiver
 export const useUpdateCareGiver = () => {
   const queryClient = useQueryClient();
@@ -53,7 +55,7 @@ export const useUpdateCareGiver = () => {
         ...updatedUser,
         zipcode: updatedUser.zipcode ? Number(updatedUser.zipcode) : undefined,
       };
-     
+    
       return updateCareGiver(userId, payload);
     },
     onSuccess: (data, variables) => {
@@ -70,7 +72,6 @@ export const useUpdateCareGiver = () => {
   });
 };
 
-
 // Delete caregiver
 export const useDeleteCareGiver = () => {
   const queryClient = useQueryClient();
@@ -79,6 +80,34 @@ export const useDeleteCareGiver = () => {
     onSuccess: (data) => {
       toast.success(data?.message);
       queryClient.invalidateQueries({ queryKey: ["careGivers"] });
+    },
+    onError: (error) => showError(error),
+  });
+};
+
+// Send bulk email mutation
+export const useSendBulkEmail = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (emailData: BulkEmailRequestType) => sendBulkEmail(emailData),
+    onSuccess: (data) => {
+      toast.success("Emails are being sent!");
+    },
+    onError: (error) => showError(error),
+  });
+};
+
+// Bulk upload users mutation
+export const useBulkUploadUsers = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => bulkUploadUsers(file),
+    onSuccess: (data) => {
+      toast.success(data?.message || "Bulk user upload started!");
+      // Invalidate caregivers list after bulk upload
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["careGivers"] });
+      }, 5000); // Wait 5 seconds before refreshing
     },
     onError: (error) => showError(error),
   });

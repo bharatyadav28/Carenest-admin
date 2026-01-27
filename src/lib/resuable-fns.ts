@@ -75,7 +75,7 @@ export const convertToDate = (
       }/${year}`;
     }
   }
-  return undefined;
+  return "N/A";
 };
 
 export const convertToPascalCase = (str: string): string => {

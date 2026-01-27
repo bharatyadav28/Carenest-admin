@@ -6,6 +6,49 @@ export interface CareGiverFiltersType {
   search?: string;
 }
 
+// Bulk email types
+export interface BulkEmailRequestType {
+  userIds: string[];
+  subject: string;
+  message: string;
+}
+
+// Bulk upload user types
+export interface BulkUploadResponseType {
+  success: boolean;
+  message: string;
+  data: {
+    fileName: string;
+    status: string;
+  };
+}
+
+// Send bulk email
+export const sendBulkEmail = async (emailData: BulkEmailRequestType) => {
+  const { data } = await axiosInstance.post(
+    `/api/v1/user/bulk-email/send`,
+    emailData
+  );
+  return data;
+};
+
+// Bulk upload users
+export const bulkUploadUsers = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const { data } = await axiosInstance.post(
+    `/api/v1/user/bulk-upload`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return data;
+};
+
 // Get all caregivers
 export const fetchCareGivers = async (filters: CareGiverFiltersType) => {
   const searchParams = new URLSearchParams();

@@ -38,7 +38,7 @@ function CareseekerDetail() {
                   <div className="relative">
                     <div className="w-32 h-32 rounded-full p-1 bg-gradient-primary">
                       <img
-                        src={`${cdnURL}${user.avatar || "https://i.pravatar.cc/150?img=5"}`}
+                         src={user.avatar ? `${cdnURL}${user.avatar}` : "../src/assets/profilepic1.png"}
                         alt={`${user.name} avatar`}
                         className="w-full h-full rounded-full object-cover"
                       />

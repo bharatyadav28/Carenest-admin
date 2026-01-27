@@ -35,6 +35,7 @@ import BecomeCaregiverManagement from "./pages/BecomeCaregiverManagement/BecomeC
 import CaregiverApplicationManagement from "./pages/CaregiverApplicationManagement/CaregiverApplicationManagement";
 import VeteransHomeCare from "./pages/veterans-home-care/VeteransHomeCareAdmin";
 import LocationServicesAdmin from "./pages/location-services/LocationServicesAdmin";
+import SubscriptionPlanManagement from "./pages/subscription/SubscriptionPlanManagement";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -102,6 +103,11 @@ function App() {
         {
           path: "/inbox",
           Component: Inbox,
+        },
+   
+        {
+          path: "/subscription-management",
+          Component: SubscriptionPlanManagement,
         },
         // New Content Management Routes
         {

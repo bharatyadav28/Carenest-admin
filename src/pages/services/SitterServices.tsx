@@ -210,7 +210,7 @@ function SitterServices() {
       <Card>
         <CardHeader>
           <CardTitle>
-            {isEditing ? "Edit Sitter Services" : "Sitter Services"}
+            {isEditing ? "Edit Sitter Services" : ""}
           </CardTitle>
         </CardHeader>
         <CardContent>

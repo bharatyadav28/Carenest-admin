@@ -20,13 +20,16 @@ import { MdOutlineHomeWork as HomeIcon } from "react-icons/md";
 import { FaHandshake as HandshakeIcon } from "react-icons/fa";
 import { MdOutlineMedicalServices as MedicalIcon } from "react-icons/md";
 import { MdOutlineChildCare as ChildIcon } from "react-icons/md";
-import { MdDirectionsCar as CarIcon } from "react-icons/md";
-import { MdDirectionsCar as MilitaryIcon } from "react-icons/md";
+import { FaCar as CarIcon } from "react-icons/fa";
+import { FaFlagUsa as MilitaryIcon } from "react-icons/fa"; // Changed to flag icon for veterans
 import { MdOutlinePolicy as PolicyIcon } from "react-icons/md";
 import { MdPrivacyTip as PrivacyIcon } from "react-icons/md";
 import { MdOutlineGavel as LegalIcon } from "react-icons/md";
 import { MdOutlineMail as InboxIcon } from "react-icons/md";
 import { MdOutlineAssignmentInd as ApplicationIcon } from "react-icons/md";
+import { MdDescription as TermsIcon } from "react-icons/md";
+import { RiMoneyDollarCircleLine as SubscriptionIcon } from "react-icons/ri";
+import { IoDocumentTextOutline as DocumentIcon } from "react-icons/io5"; // Alternative for Terms
 
 import {
   Sidebar,
@@ -197,7 +200,7 @@ function AppSidebar() {
         },
         {
           name: "Terms and Conditions",
-          Icon: ContentIcon,
+          Icon: TermsIcon,
           path: "/terms-and-conditions",
         },
         {
@@ -211,6 +214,11 @@ function AppSidebar() {
       name: "Inbox",
       Icon: InboxIcon,
       path: "/inbox",
+    },
+    {
+      name: "Subscription Management",
+      Icon: SubscriptionIcon,
+      path: "/subscription-management",
     },
     {
       name: "Caregiver Applications",

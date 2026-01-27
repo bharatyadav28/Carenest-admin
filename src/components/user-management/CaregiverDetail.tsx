@@ -35,11 +35,11 @@ function CaregiverDetail() {
                 {/* Avatar */}
                 <div className="flex flex-col items-center lg:items-start gap-4">
                   <div className="relative">
-                    <div className="w-32 h-32 rounded-full p-1 bg-gradient-primary">
+                    <div className="w-32 h-32 items-center  rounded-full p-1 bg-gradient-primary">
                       <img
-                        src={`${cdnURL}${user.avatar || "https://i.pravatar.cc/150?img=5"}`}
-                        alt={`${user.name} avatar`}
-                        className="w-full h-full rounded-full object-cover"
+                       src={user.avatar ? `${cdnURL}${user.avatar}` : "../src/assets/profilepic1.png"}
+                        alt={`not uploaded`}
+                        className="w-full h-full items-center rounded-full object-cover"
                       />
                     </div>
                   </div>
@@ -167,7 +167,7 @@ function CaregiverDetail() {
                 <div>
                   <h4 className="text-lg font-semibold text-white mb-3">Caretype</h4>
                   <div className="flex flex-wrap gap-2">
-                    {user.services && user.services.length > 0
+                    {user.services && user.services.length > 1
                       ? user.services.map((care: string) => (
                           <Badge key={care} variant="outline" className="text-sm px-3 py-1">
                             {care}

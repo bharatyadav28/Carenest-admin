@@ -29,7 +29,7 @@ function CaregiverCard({
 
   return (
     <div
-      className={`relative group p-6 rounded-xl border-2 transition-all duration-300 md:w-[15rem] w-full hover:scale-105 hover:shadow-lg hover:cursor-pointer ${
+      className={`relative group p-6 rounded-xl border-2 transition-all duration-300 md:w-[22rem] w-full hover:scale-105 hover:shadow-lg hover:cursor-pointer ${
         isFinalSelection
           ? "border-emerald-400 bg-gradient-to-br from-emerald-900/30 to-emerald-800/20 shadow-emerald-500/20"
           : "border-slate-600 bg-gradient-to-br from-slate-800/50 to-slate-700/30 hover:border-slate-500 hover:shadow-slate-500/10"
@@ -78,7 +78,7 @@ function CaregiverCard({
 
       {/* Name */}
       <div className="text-center mb-2">
-        <h3 className="font-semibold text-slate-100 text-base truncate">
+        <h3 className="font-semibold text-slate-100 text-base ">
           {caregiver.name}
         </h3>
       </div>

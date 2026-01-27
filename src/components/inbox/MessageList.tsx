@@ -3,6 +3,7 @@ import { SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 import { cdnURL } from "@/lib/resuable-data";
 import { Input } from "@/components/ui/input";
 import NoItems from "@/components/common/NoItems";
@@ -22,13 +23,24 @@ function MessageList({ handleOpenMessages }: Props) {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
-  const { onNewMessage } = useSocket(Cookies.get("authToken"));
+  const token = Cookies.get("authToken");
+  const { onNewMessage } = useSocket(token);
   const navigate = useNavigate();
 
   const chats = useGetAllChats();
   const chatList = chats?.data?.data?.conversations || [];
-  
+
   const noChats = chatList.length === 0;
+
+  let currentUserId: string | null = null;
+  if (token) {
+    try {
+      const decoded: { sub: string } = jwtDecode(token);
+      currentUserId = decoded.sub;
+    } catch (error) {
+      console.error("Failed to decode token:", error);
+    }
+  }
 
   // Sort chats by latest message
   const sortedChats = [...chatList].sort((a, b) => {
@@ -44,19 +56,27 @@ function MessageList({ handleOpenMessages }: Props) {
       queryClient.setQueryData(["chats"], (oldData: any) => {
         if (!oldData?.data) return oldData;
 
-        const updatedConversations = oldData.data.conversations.map((chat: any) => {
-          if (chat.toUser.id === message.fromUserId || chat.toUser.id === message.toUserId) {
-            return {
-              ...chat,
-              lastMessage: {
-                message: message.message,
-                createdAt: message.createdAt
-              },
-              unReadCount: chat.unReadCount + 1
-            };
+        const updatedConversations = oldData.data.conversations.map(
+          (chat: any) => {
+            if (
+              chat.toUser.id === message.fromUserId ||
+              chat.toUser.id === message.toUserId
+            ) {
+              const isMyMessage = message.fromUserId === currentUserId;
+              return {
+                ...chat,
+                lastMessage: {
+                  message: message.message,
+                  createdAt: message.createdAt,
+                },
+                unReadCount: isMyMessage
+                  ? chat.unReadCount
+                  : chat.unReadCount + 1,
+              };
+            }
+            return chat;
           }
-          return chat;
-        });
+        );
 
         // Sort by latest message
         updatedConversations.sort((a: any, b: any) => {
@@ -69,14 +89,14 @@ function MessageList({ handleOpenMessages }: Props) {
           ...oldData,
           data: {
             ...oldData.data,
-            conversations: updatedConversations
-          }
+            conversations: updatedConversations,
+          },
         };
       });
     };
 
     onNewMessage(handleNewMessage);
-  }, [onNewMessage, queryClient]);
+  }, [onNewMessage, queryClient, currentUserId]);
 
   useEffect(() => {
     if (!selectedUserId && sortedChats.length > 0) {
@@ -134,16 +154,15 @@ function MessageList({ handleOpenMessages }: Props) {
                     }
                     alt={chat?.toUser?.name}
                   />
-           
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="font-semibold">{chat.toUser.name}</div>
                   <div className="text-sm text-[var(--cool-gray)]">
-                  {chat?.lastMessage?.message 
-    ? (chat.lastMessage.message.length > 20 
-        ? `${chat.lastMessage.message.substring(0, 20)}...`
-        : chat.lastMessage.message)
-    : "No messages yet"}
+                    {chat?.lastMessage?.message
+                      ? chat.lastMessage.message.length > 20
+                        ? `${chat.lastMessage.message.substring(0, 20)}...`
+                        : chat.lastMessage.message
+                      : "No messages yet"}
                   </div>
                 </div>
               </div>

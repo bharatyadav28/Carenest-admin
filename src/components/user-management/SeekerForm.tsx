@@ -21,16 +21,47 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"; // ✅ Import Select components
+} from "@/components/ui/select";
 
+// Updated schema with proper validation similar to caregiver form
 export const formSchema = z.object({
-  name: z.string().min(3).max(255),
-  email: z.string().email().max(255),
-  mobile: z.string().max(15).optional(),
-  address: z.string().optional(),
-  city: z.string().optional(), // Added city to schema
-  zipcode: z.string(),
-  gender: z.string().max(255).optional(),
+  name: z.string()
+    .min(3, "Name must be at least 3 characters")
+    .max(255, "Name must be less than 255 characters")
+    .nonempty("Name is required"),
+  
+  email: z.string()
+    .email("Please enter a valid email address")
+    .max(255, "Email must be less than 255 characters")
+    .nonempty("Email is required"),
+  
+  mobile: z.string()
+    .min(10, "Mobile number must be at least 10 digits")
+    .max(15, "Mobile number must be less than 15 digits")
+    .regex(/^[0-9]+$/, "Mobile number must contain only digits")
+    .nonempty("Mobile number is required"),
+  
+  address: z.string()
+    .min(5, "Address must be at least 5 characters")
+    .max(500, "Address must be less than 500 characters")
+    .nonempty("Address is required"),
+  
+  city: z.string()
+    .min(2, "City must be at least 2 characters")
+    .max(100, "City must be less than 100 characters")
+    .nonempty("City is required"),
+  
+  zipcode: z.string()
+    .min(5, "Zipcode must be at least 5 characters")
+    .max(10, "Zipcode must be less than 10 characters")
+    .regex(/^[0-9]+$/, "Zipcode must contain only digits")
+    .nonempty("Zipcode is required"),
+  
+  gender: z.string()
+    .nonempty("Gender is required")
+    .refine((val) => ["Male", "Female", "Other"].includes(val), {
+      message: "Please select a valid gender",
+    }),
 });
 
 const initialFormValues = {
@@ -38,7 +69,7 @@ const initialFormValues = {
   email: "",
   mobile: "",
   address: "",
-  city: "", // Added city to initial values
+  city: "",
   zipcode: "",
   gender: "",
 };
@@ -52,23 +83,16 @@ function SeekerForm({ open, handleOpen }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialFormValues,
+    mode: "onChange", // Validate on change for real-time feedback
   });
 
   const createSeeker = useCreateSeeker();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createSeeker.mutate({
-      ...values,
-      mobile: values.mobile || "",
-      address: values.address || "",
-      city: values.city || "", // Ensure city is included
-      gender: values.gender || "",
-    }, {
+    createSeeker.mutate(values, {
       onSuccess: () => {
         handleOpen();
-        form.reset({
-          ...initialFormValues,
-        });
+        form.reset(initialFormValues);
       },
     });
   }
@@ -79,7 +103,7 @@ function SeekerForm({ open, handleOpen }: Props) {
       handleOpen={handleOpen}
       className="max-w-lg !mx-auto"
     >
-      <div className="p-6">
+      <div className="px-6 py-2 overflow-y-auto">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             {/* Name */}
@@ -88,9 +112,13 @@ function SeekerForm({ open, handleOpen }: Props) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel className="required">Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter Careseeker name" {...field} />
+                    <Input 
+                      placeholder="Enter careseeker name" 
+                      {...field} 
+                      className={form.formState.errors.name ? "border-red-500" : ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,12 +131,13 @@ function SeekerForm({ open, handleOpen }: Props) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="required">Email</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
                       placeholder="Enter careseeker email"
                       {...field}
+                      className={form.formState.errors.email ? "border-red-500" : ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -122,12 +151,13 @@ function SeekerForm({ open, handleOpen }: Props) {
               name="mobile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mobile</FormLabel>
+                  <FormLabel className="required">Mobile</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
                       placeholder="Enter careseeker mobile"
                       {...field}
+                      className={form.formState.errors.mobile ? "border-red-500" : ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -141,12 +171,13 @@ function SeekerForm({ open, handleOpen }: Props) {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel className="required">Address</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
                       placeholder="Enter careseeker address"
                       {...field}
+                      className={form.formState.errors.address ? "border-red-500" : ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -160,12 +191,13 @@ function SeekerForm({ open, handleOpen }: Props) {
               name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>City</FormLabel>
+                  <FormLabel className="required">City</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
                       placeholder="Enter careseeker city"
                       {...field}
+                      className={form.formState.errors.city ? "border-red-500" : ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -179,12 +211,13 @@ function SeekerForm({ open, handleOpen }: Props) {
               name="zipcode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Zip Code</FormLabel>
+                  <FormLabel className="required">Zip Code</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
                       placeholder="Enter careseeker zip code"
                       {...field}
+                      className={form.formState.errors.zipcode ? "border-red-500" : ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -192,19 +225,19 @@ function SeekerForm({ open, handleOpen }: Props) {
               )}
             />
 
-            {/* ✅ Gender Dropdown */}
+            {/* Gender Dropdown */}
             <FormField
               control={form.control}
               name="gender"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gender</FormLabel>
+                  <FormLabel className="required">Gender</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     value={field.value || ""}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className={form.formState.errors.gender ? "border-red-500" : ""}>
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
                     </FormControl>
@@ -221,8 +254,8 @@ function SeekerForm({ open, handleOpen }: Props) {
 
             <CustomButton
               type="submit"
-              className="green-button w-full"
-              disabled={createSeeker.isPending}
+              className="green-button w-full mt-6"
+              disabled={createSeeker.isPending || !form.formState.isValid}
             >
               {createSeeker.isPending ? <LoadingSpinner /> : "Add Care Seeker"}
             </CustomButton>

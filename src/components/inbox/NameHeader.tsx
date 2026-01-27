@@ -1,12 +1,5 @@
 // import { useState } from "react";
-import { PiDotsThreeVerticalBold as OptionsIcon } from "react-icons/pi";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import ProfilePic from "@/assets/profilepic1.png";
 import DP from "../common/DP";
 import { cdnURL } from "@/lib/resuable-data";
@@ -19,9 +12,7 @@ interface Props {
 function NameHeader({ name, avatar }: Props) {
   // const [openDeleteDialog, setOpenDialog] = useState(false);
 
-  const handleOpen = () => {
-    // setOpenDialog((prev) => !prev);
-  };
+
 
   return (
     <>
@@ -32,23 +23,7 @@ function NameHeader({ name, avatar }: Props) {
             {name ? name : "William James"}
           </div>
         </div>
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <OptionsIcon size={20} />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className=" !min-w-0 w-max ">
-              <DropdownMenuItem>
-                <button
-                  className="m-0 p-0 hover:cursor-pointer"
-                  onClick={handleOpen}
-                >
-                  Delete
-                </button>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+    
       </div>
 
       {/* <ActionDialog

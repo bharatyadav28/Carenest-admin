@@ -210,7 +210,7 @@ function CompanionCare() {
       <Card>
         <CardHeader>
           <CardTitle>
-            {isEditing ? "Edit Companion Care Service" : "Companion Care Service"}
+            {isEditing ? "Edit Companion Care Service" : ""}
           </CardTitle>
         </CardHeader>
         <CardContent>

@@ -210,7 +210,7 @@ function HomeCare() {
       <Card>
         <CardHeader>
           <CardTitle>
-            {isEditing ? "Edit Home Care Service" : "Home Care Service"}
+            {isEditing ? "Edit Home Care Service" : ""}
           </CardTitle>
         </CardHeader>
         <CardContent>

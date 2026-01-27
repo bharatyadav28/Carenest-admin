@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { LuSend as SendIcon } from "react-icons/lu";
 // import { IoIosAttach as AttachmentIcon } from "react-icons/io";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Input } from "@/components/ui/input";
 import { useSocket } from "@/hooks/use-socket";
@@ -14,6 +15,7 @@ interface InputMessageProps {
 
 function InputMessage({ userId, addMessage }: InputMessageProps) {
   const [message, setMessage] = useState("");
+  const queryClient = useQueryClient();
 
   const token = Cookies.get("authToken");
   const { sendMessage, onNewMessage } = useSocket(token);
@@ -22,9 +24,9 @@ function InputMessage({ userId, addMessage }: InputMessageProps) {
     if (!userId || !message.trim()) return;
 
     const newMsg: chatMessageType = {
-      id: Date.now().toString(), 
+      id: Date.now().toString(),
       conversationId: "",
-      isOtherUserMessage: false, 
+      isOtherUserMessage: false,
       message: message,
       createdAt: new Date().toISOString(),
       hasRead: true,
@@ -32,12 +34,44 @@ function InputMessage({ userId, addMessage }: InputMessageProps) {
 
     addMessage?.(newMsg);
 
-   
     sendMessage(userId, message);
 
-    setMessage(""); 
-  };
+    queryClient.setQueryData(["chats"], (oldData: any) => {
+      if (!oldData?.data?.conversations) return oldData;
 
+      const updatedConversations = oldData.data.conversations.map(
+        (chat: any) => {
+          if (chat.toUser.id === userId) {
+            return {
+              ...chat,
+              lastMessage: {
+                message: message,
+                createdAt: new Date().toISOString(),
+              },
+            };
+          }
+          return chat;
+        }
+      );
+
+      // Sort to bring the updated chat to the top
+      updatedConversations.sort((a: any, b: any) => {
+        const dateA = new Date(a.lastMessage?.createdAt || 0);
+        const dateB = new Date(b.lastMessage?.createdAt || 0);
+        return dateB.getTime() - dateA.getTime();
+      });
+
+      return {
+        ...oldData,
+        data: {
+          ...oldData.data,
+          conversations: updatedConversations,
+        },
+      };
+    });
+
+    setMessage("");
+  };
 
   useEffect(() => {
     const handleNewMessage = (msg: any) => {

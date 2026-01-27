@@ -247,7 +247,7 @@ function VeteransHomeCare() {
           <CardTitle>
             {isEditing 
               ? (veteransHomeCare ? "Edit Veterans Home Care" : "Create Veterans Home Care") 
-              : "Veterans Home Care"
+              : ""
             }
           </CardTitle>
         </CardHeader>
