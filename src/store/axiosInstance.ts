@@ -13,8 +13,8 @@ const axiosInstance = axios.create({
   //   process.env.NODE_ENV === "production"
   //     ? "https://carenest-backend-8y2y.onrender.com"
   //     : "http://localhost:4000",
-  // baseURL: "https://carenest-backend-8y2y.onrender.com",
-  baseURL: "http://localhost:4000",
+  baseURL: "https://carenest-backend-8y2y.onrender.com",
+  // baseURL: "http://localhost:4000",
 });
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
