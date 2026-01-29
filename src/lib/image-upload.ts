@@ -22,4 +22,4 @@ export const uploadImage = async (file: File): Promise<string> => {
   }
 };
 
-export const cdnURL = "https://creative-story.s3.us-east-1.amazonaws.com";
+export const cdnURL = "https://carenest-storage.ap-south-1.storage.onantryk.com";
